@@ -4,10 +4,10 @@ theory Axioms_Complement_Quantum
   imports
     Laws_Quantum
     Quantum_Extra
-    "../Hilbert_Space_Tensor_Product/Weak_Star_Topology"
-    "../Hilbert_Space_Tensor_Product/Partial_Trace"
+    Hilbert_Space_Tensor_Product.Weak_Star_Topology
+    Hilbert_Space_Tensor_Product.Partial_Trace
     With_Type.With_Type
-    "../Hilbert_Space_Tensor_Product/Misc_Tensor_Product_TTS"
+    Hilbert_Space_Tensor_Product.Misc_Tensor_Product_TTS
 begin
 
 no_notation m_inv ("inv\<index> _" [81] 80)

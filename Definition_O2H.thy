@@ -1,9 +1,8 @@
 theory Definition_O2H
 
-imports "Registers_Updated/Pure_States" 
-         Additional_Lemmas
-        "Berlekamp_Zassenhaus.Finite_Field"
-        
+imports Registers_Updated.Pure_States
+        Additional_Lemmas
+        Berlekamp_Zassenhaus.Finite_Field
 
 begin
 

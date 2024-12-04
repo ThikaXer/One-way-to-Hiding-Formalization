@@ -1,12 +1,11 @@
 theory Additional_Lemmas
 
-imports "Registers_Updated/Pure_States"
+imports Registers_Updated.Pure_States
 
 begin
 text \<open>This theory contains additional lemmas on summability, trace, tensor product, sandwiching 
 operator, arithmetic-quadratic mean inequality, matrices with norm less or equal one, projections
-and more.
-\<close>
+and more.\<close>
 
 text \<open>An additional lemma\<close>
 lemma abs_summable_on_reindex:
