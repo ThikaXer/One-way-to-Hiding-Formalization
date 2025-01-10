@@ -46,9 +46,8 @@ proof -
   obtain B where B: \<open>finite F \<Longrightarrow> F \<subseteq> Rep_kraus_family \<EE> \<Longrightarrow> (\<Sum>(E,x)\<in>F. E* o\<^sub>C\<^sub>L E) \<le> B\<close> for F
     using Rep_kraus_family[of \<EE>]
     by (auto simp: kraus_family_def case_prod_unfold bdd_above_def)
-  have \<open>summable_on_in cweak_operator_topology (\<lambda>(E, x). E* o\<^sub>C\<^sub>L E) (Rep_kraus_family \<EE>)\<close>
-    apply (auto intro!: summable_wot_boundedI positive_cblinfun_squareI simp: kraus_family_def)
-    using B by blast
+  then have \<open>summable_on_in cweak_operator_topology (\<lambda>(E, x). E* o\<^sub>C\<^sub>L E) (Rep_kraus_family \<EE>)\<close>
+    by (auto intro!: summable_wot_boundedI positive_cblinfun_squareI simp: kraus_family_def)
   then show ?thesis
     by (auto intro!: has_sum_in_infsum_in simp: kraus_family_bound_def)
 qed
@@ -152,8 +151,7 @@ proof -
      apply (rule complex_normed_vector_axioms)
     by (rule not_singleton)
   have *: \<open>selfadjoint (\<Sum>(E,x)\<in>F. E* o\<^sub>C\<^sub>L E)\<close> for F :: \<open>('a \<Rightarrow>\<^sub>C\<^sub>L 'b \<times> 'c) set\<close>
-    apply (auto intro!: pos_imp_selfadjoint sum_nonneg)
-    using positive_cblinfun_squareI by blast
+    by (auto intro!: pos_imp_selfadjoint sum_nonneg simp add: positive_cblinfun_squareI)
   from assms
   have \<open>\<And>F. finite F \<Longrightarrow> F \<subseteq> Rep_kraus_family \<EE> \<Longrightarrow> (\<Sum>(E,x)\<in>F. E* o\<^sub>C\<^sub>L E) \<le> B *\<^sub>R id_cblinfun\<close>
     apply (rule less_eq_scaled_id_norm)
@@ -268,13 +266,16 @@ proof -
     apply (rule linear_compose[where g=Re, unfolded o_def])
     by (auto intro!: bounded_linear.linear bounded_clinear.bounded_linear
         bounded_clinear_trace_duality' bounded_linear_Re)
-  have trace_EE\<rho>_mono: \<open>mono_on (Collect ((\<le>) 0)) (\<lambda>A. Re (trace (A o\<^sub>C\<^sub>L from_trace_class \<rho>)))\<close> for M
-    apply (auto intro!: mono_onI Re_mono)
+  have "r \<le> s \<Longrightarrow> 0 \<le> r \<Longrightarrow> 0 \<le> s \<Longrightarrow> 
+    trace (r o\<^sub>C\<^sub>L from_trace_class \<rho>) \<le> trace (s o\<^sub>C\<^sub>L from_trace_class \<rho>) " for r s
     apply (subst diff_ge_0_iff_ge[symmetric])
     apply (subst trace_minus[symmetric])
     by (auto intro!: trace_class_comp_right trace_comp_pos
         simp: from_trace_class_pos \<rho>_pos
         simp flip: cblinfun_compose_minus_left)
+  then have trace_EE\<rho>_mono: \<open>mono_on (Collect ((\<le>) 0)) (\<lambda>A. Re (trace (A o\<^sub>C\<^sub>L from_trace_class \<rho>)))\<close> for M
+  by (auto intro!: mono_onI Re_mono)
+    
 
   from assms
   have \<open>bdd_above ((\<lambda>F. (\<Sum>(E,x)\<in>F. E* o\<^sub>C\<^sub>L E)) ` {F. finite F \<and> F \<subseteq> \<EE>})\<close>
@@ -421,11 +422,9 @@ qed
 
 lemma kraus_family_map_bounded_clinear[bounded_clinear]:
   shows \<open>bounded_clinear (kraus_family_map \<EE>)\<close>
-  apply (rule bounded_clinearI[where K=\<open>4 * kraus_family_norm \<EE>\<close>])
-    apply (auto intro!: kraus_family_map_plus_right kraus_family_map_scaleC
-      mult.commute)
-  using kraus_family_map_bounded
-  by (simp add: mult.commute)
+  by (rule bounded_clinearI[where K=\<open>4 * kraus_family_norm \<EE>\<close>])
+     (use kraus_family_map_bounded in \<open>auto intro!: kraus_family_map_plus_right 
+        kraus_family_map_scaleC mult.commute simp add:  mult.commute\<close>)
 
 
 

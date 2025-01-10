@@ -1097,8 +1097,9 @@ proof -
   have rew3: "complex_of_real (sqrt (real (d + 1) * Re (Pfind F) + real d * P_nonterm F)) = 
        csqrt (real (d + 1) * (Pfind F) + real d * P_nonterm F)"
     by (subst of_real_sqrt[OF pos]) (auto simp add: error_term_pos Re_Pfind) 
-  show ?thesis by (subst complex_of_real_mono_iff[symmetric], subst complex_of_real_abs, 
-    subst of_real_diff, subst rew1, subst rew2, subst rew3) (use estimate_Pfind_finite_sqrt[OF assms] in \<open>auto\<close>)
+  show ?thesis apply (subst complex_of_real_mono_iff[symmetric], subst complex_of_real_abs)
+    apply (subst of_real_diff, subst rew1, subst rew2, subst rew3) 
+    by (use estimate_Pfind_finite_sqrt[OF assms] in \<open>auto\<close>)
 qed
 
 
