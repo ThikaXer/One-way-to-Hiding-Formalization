@@ -3,9 +3,11 @@ theory Kraus_Maps
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+
 section \<open>Kraus Maps\<close>
 (* This is a subset of the qrhl-tool theory for Kraus maps. *)
-unbundle cblinfun_notation
 
 text \<open>We define Kraus maps. A Kraus map \<open>\<EE>\<close> is a set of possibly infinitely many operators $E_i$ 
 that have the property that \<open>\<Sum>E_i. E_i* o\<^sub>C\<^sub>L E_i\<close> converges (they can then be scaled to suffice 
@@ -450,6 +452,8 @@ lemma trace_preserving_trace_kraus_map[iff]: \<open>trace_preserving_map (one_di
   by (auto intro!: clinear_compose simp add: trace_preserving_map_def bounded_clinear.clinear)
 
 
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
 
 
 end

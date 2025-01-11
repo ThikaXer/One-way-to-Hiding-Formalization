@@ -1,8 +1,9 @@
 theory Unitary_S_prime
-
-imports Definition_O2H
-
+  imports Definition_O2H
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
 
 context o2h_setting
 begin
@@ -204,5 +205,8 @@ qed
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
 
 end

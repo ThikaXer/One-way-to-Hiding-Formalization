@@ -6,6 +6,10 @@ imports Run_Pure_B
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
 context pure_o2h
 begin
 
@@ -404,5 +408,9 @@ lemma error_term_pos:
 using pure_o2h by (smt (verit, best) power2_diff sum_squares_bound)
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
 
 end

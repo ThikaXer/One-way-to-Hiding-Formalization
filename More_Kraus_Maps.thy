@@ -5,6 +5,9 @@ imports Kraus_Maps
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+
 text \<open>Fst on kraus families.\<close>
 
 
@@ -252,6 +255,8 @@ shows "(kraus_family_map \<FF> o f) abs_summable_on A"
 by (intro abs_summable_on_bounded_linear) 
    (auto simp add: assms bounded_clinear.bounded_linear kraus_family_map_bounded_clinear)
 
-   
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+
 
 end

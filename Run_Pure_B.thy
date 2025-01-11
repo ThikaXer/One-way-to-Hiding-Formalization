@@ -3,6 +3,12 @@ theory Run_Pure_B
 imports Definition_Pure_O2H 
 
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
+
 context pure_o2h
 begin
 section \<open>Defining and Representing the Adversary $B$\<close>
@@ -449,4 +455,9 @@ lemma run_B_split:
 unfolding run_B_altdef has_bits_upto_d[symmetric] by (subst run_B_upto_split[symmetric]) auto
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 end

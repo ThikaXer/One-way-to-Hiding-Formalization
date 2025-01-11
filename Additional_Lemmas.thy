@@ -1,8 +1,10 @@
 theory Additional_Lemmas
-
-imports Registers_Updated.Pure_States
-
+  imports Registers.Pure_States
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+
 text \<open>This theory contains additional lemmas on summability, trace, tensor product, sandwiching 
 operator, arithmetic-quadratic mean inequality, matrices with norm less or equal one, projections
 and more.\<close>
@@ -369,6 +371,9 @@ qed
 
 lemma clinear_of_complex[iff]: \<open>clinear of_complex\<close>
   by (simp add: clinearI)
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
 
 
 end

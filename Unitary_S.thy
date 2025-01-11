@@ -3,6 +3,10 @@ theory Unitary_S
 imports Definition_O2H
 
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+
 context o2h_setting
 begin
 subsection \<open>Linear operator \<open>US\<close>\<close>
@@ -198,4 +202,9 @@ proof (intro equal_ket, safe, goal_cases)
 qed
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+
+
 end

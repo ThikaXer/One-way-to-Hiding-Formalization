@@ -3,6 +3,11 @@ theory O2H_Theorem
 imports Mixed_O2H
 
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
 section \<open>General O2H Setting and Theorem\<close>
 
 text \<open>General O2H setting\<close>
@@ -1119,5 +1124,10 @@ qed
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 
 end

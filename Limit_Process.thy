@@ -4,6 +4,9 @@ imports Run_Adversary
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
 
 section \<open>Limit Processes\<close>
 
@@ -562,5 +565,10 @@ proof -
 qed
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 
 end

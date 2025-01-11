@@ -8,6 +8,10 @@ imports Definition_O2H
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
 section \<open>Running the Adversary\<close>
 
 text \<open>Modelling the adversary, some type synonyms.\<close>
@@ -433,4 +437,9 @@ by (intro trace_preserving_norm_run_mixed_adv)
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 end

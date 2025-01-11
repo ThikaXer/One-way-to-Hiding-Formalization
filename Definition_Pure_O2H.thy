@@ -5,6 +5,10 @@ imports Definition_O2H
 
 begin
 
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
 subsection \<open>Locale for the pure O2H setting\<close>
 
 text \<open>For the pure state case, we define a separate locale for the pure one-way to hiding lemma.\<close>
@@ -41,4 +45,9 @@ by (auto intro!: tensor_ell2_extensionality simp add: tensor_op_ell2)
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 end

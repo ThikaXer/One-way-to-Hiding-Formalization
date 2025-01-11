@@ -1,10 +1,12 @@
 theory Definition_O2H
 
-imports Registers_Updated.Pure_States
+imports Registers.Pure_States
         Additional_Lemmas
-        Berlekamp_Zassenhaus.Finite_Field
 
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
 
 section \<open>Definitions for the one-way to Hiding (O2H) Lemma\<close>
 text \<open>Here, we first define the context of the O2H Lemma and foundations.\<close>
@@ -810,7 +812,7 @@ qed
 
 end
 
-
-
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
 
 end

@@ -5,6 +5,11 @@ imports Run_Adversary
 begin
 context o2h_setting
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
 section \<open>Purification of the Adversary\<close>
 
 text \<open>Purification of composed kraus maps.\<close>
@@ -401,4 +406,9 @@ qed
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 end

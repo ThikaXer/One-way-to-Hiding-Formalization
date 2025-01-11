@@ -3,6 +3,12 @@ theory Run_Pure_B_count
 imports Definition_Pure_O2H
 
 begin
+
+unbundle cblinfun_syntax
+unbundle lattice_syntax
+unbundle register_syntax
+
+
 context pure_o2h
 begin
 section \<open>Defining and Representing the Adversary $B$ with Counting\<close>
@@ -291,4 +297,9 @@ qed
 
 
 end
+
+unbundle no cblinfun_syntax
+unbundle no lattice_syntax
+unbundle no register_syntax
+
 end
