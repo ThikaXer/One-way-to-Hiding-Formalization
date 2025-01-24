@@ -1,7 +1,6 @@
 theory Run_Adversary
 
 imports Definition_O2H 
-        Kraus_Maps 
         More_Kraus_Maps
         Unitary_S 
         Unitary_S_prime

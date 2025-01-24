@@ -27,7 +27,7 @@ text \<open>Some auxiliary lemmas on injectivity, Fst and finiteness.\<close>
 
 lemma Rep_kraus_family_id:
 "Rep_kraus_family kraus_family_id = {(id_cblinfun,())}"
-by (simp add: kraus_family_id_def kraus_family_of_op.rep_eq)
+  by (simp add: kraus_family_id_def kraus_family_of_op.rep_eq del: kraus_family_of_op_id)
 
 lemma fst_Rep_kraus_family_Fst:
 fixes \<EE> :: "('a ell2, 'b ell2, unit) kraus_family"
@@ -55,7 +55,7 @@ using assms by transfer auto
 
 lemma finite_kraus_family_id:
 "finite (Rep_kraus_family kraus_family_id)"
-by (simp add: kraus_family_id_def kraus_family_of_op.rep_eq)
+by (simp add: Rep_kraus_family_id)
 
 
 lemma inj_on_fst_Rep_kraus_family:
