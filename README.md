@@ -1,4 +1,4 @@
-# NOTE: OUTDATED INSTRUCTIONS. Use Isabelle2025 snapshot
+# NOTE: OUTDATED INSTRUCTIONS. Use Isabelle2025 snapshot and afp-devel
 
 ## Installation of Isabelle 2024 - How to get the theories running
 
