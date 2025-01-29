@@ -80,18 +80,18 @@ text \<open>Definitions for mixed adversaries\<close>
 
 fun run_mixed_adv :: 
 "nat \<Rightarrow> 'a kraus_adv \<Rightarrow> (nat \<Rightarrow> 'a update) \<Rightarrow> 'a ell2 \<Rightarrow> _ \<Rightarrow> _ \<Rightarrow> _ \<Rightarrow> 'a tc_op"  where 
-  "run_mixed_adv 0 Es UB init X Y H = (kraus_family_map (Es 0)) (tc_selfbutter init)"
-| "run_mixed_adv (Suc n) Es UB init X Y H = (kraus_family_map (Es (Suc n))) 
+  "run_mixed_adv 0 Es UB init X Y H = (kf_apply (Es 0)) (tc_selfbutter init)"
+| "run_mixed_adv (Suc n) Es UB init X Y H = (kf_apply (Es (Suc n))) 
     (sandwich_tc ((X;Y) (Uquery H) o\<^sub>C\<^sub>L UB n) (run_mixed_adv n Es UB init X Y H))"
 
 
 lemma run_mixed_adv_pos:
 "run_mixed_adv n Es UB init X Y H \<ge> 0"
-by (induct n) (auto simp add: Abs_trace_class_geq0I sandwich_tc_pos kraus_family_map_pos tc_selfbutter_def)
+by (induct n) (auto simp add: Abs_trace_class_geq0I sandwich_tc_pos kf_apply_pos tc_selfbutter_def)
 
 
 lemma (in o2h_setting) norm_run_mixed_adv:
-assumes Es_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (Es i) \<le> id_cblinfun"
+assumes Es_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (Es i) \<le> id_cblinfun"
 and n: "n < d+1"
 and normUB: "\<And>i. i < d+1 \<Longrightarrow> norm (UB i) \<le> 1" 
 and register: "register (X';Y')"
@@ -103,10 +103,10 @@ using n proof (induct n)
   have norm1:"norm (tc_selfbutter init') = 1" using norm_init'
     by (simp add: norm_tc_butterfly tc_selfbutter_def)
   have init0: "0 \<le> tc_selfbutter init'" by (simp add: tc_selfbutter_def)
-  have "norm (run_mixed_adv 0 Es UB init' X' Y' H) \<le> kraus_family_norm (Es 0)" 
-    using kraus_family_map_bounded_pos[OF init0] norm1 by auto
-  also have "\<dots> \<le> 1" unfolding kraus_family_norm_def using Es_norm_id[of 0]
-    by (metis Suc_eq_plus1 kraus_family_bound_pos norm_cblinfun_id norm_cblinfun_mono zero_less_Suc)
+  have "norm (run_mixed_adv 0 Es UB init' X' Y' H) \<le> kf_norm (Es 0)" 
+    using kf_apply_bounded_pos[OF init0] norm1 by auto
+  also have "\<dots> \<le> 1" unfolding kf_norm_def using Es_norm_id[of 0]
+    by (metis Suc_eq_plus1 kf_bound_pos norm_cblinfun_id norm_cblinfun_mono zero_less_Suc)
   finally show ?case by auto
 next
   case (Suc n)
@@ -114,11 +114,11 @@ next
   let ?sand = "sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n)"
   have pos: "?sand (run_mixed_adv n Es UB init' X' Y' H) \<ge> 0"
     using sandwich_tc_pos[OF run_mixed_adv_pos] by blast
-  have "norm (kraus_family_map (Es (Suc n)) (?sand (run_mixed_adv n Es UB init' X' Y' H))) \<le>
-    kraus_family_norm (Es (Suc n)) *  norm (?sand (run_mixed_adv n Es UB init' X' Y' H))"
-    using kraus_family_map_bounded_pos[OF pos] by auto
+  have "norm (kf_apply (Es (Suc n)) (?sand (run_mixed_adv n Es UB init' X' Y' H))) \<le>
+    kf_norm (Es (Suc n)) *  norm (?sand (run_mixed_adv n Es UB init' X' Y' H))"
+    using kf_apply_bounded_pos[OF pos] by auto
   also have "\<dots> \<le> norm (?sand (run_mixed_adv n Es UB init' X' Y' H))"
-    unfolding kraus_family_norm_def using Es_norm_id[OF Suc(2)] by (metis kraus_family_bound_pos 
+    unfolding kf_norm_def using Es_norm_id[OF Suc(2)] by (metis kf_bound_pos 
     mult_left_le_one_le norm_cblinfun_id norm_cblinfun_mono norm_ge_zero)
   also have "\<dots> \<le> (norm ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n))^2" 
     using norm_sandwich_tc Suc by (smt (verit, best) Suc_lessD mult_less_cancel_left1 zero_le_power2)
@@ -132,16 +132,16 @@ qed
 
 text \<open>Trace preserving Kraus maps/adversaries preserve the norm.\<close>
 
-lemma trace_preserving_map_kraus_family_map:
-assumes "trace_preserving_map (kraus_family_map F)" "\<rho> \<ge> 0"
-shows "norm (kraus_family_map F \<rho>) = norm \<rho>"
+lemma trace_preserving_map_kf_apply:
+assumes "trace_preserving_map (kf_apply F)" "\<rho> \<ge> 0"
+shows "norm (kf_apply F \<rho>) = norm \<rho>"
 using assms unfolding trace_preserving_map_def
-by (simp add: kraus_family_map_pos norm_tc_pos_Re)
+by (simp add: kf_apply_pos norm_tc_pos_Re)
 
 
 
 lemma (in o2h_setting) trace_preserving_norm_run_mixed_adv:
-assumes trace_pres: "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (Es i))"
+assumes trace_pres: "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply (Es i))"
 and n: "n < d+1"
 and iso_UB: "\<And>i. i < d+1 \<Longrightarrow> isometry (UB i)" 
 and register: "register (X';Y')"
@@ -150,17 +150,17 @@ fixes H :: "'x \<Rightarrow> 'y"
 shows "norm (run_mixed_adv n Es UB init' X' Y' H) = 1"
 using n proof (induct n)
   case 0
-  have "norm (kraus_family_map (Es 0) (tc_selfbutter init')) = norm (tc_selfbutter init')" 
-    by (intro trace_preserving_map_kraus_family_map) 
+  have "norm (kf_apply (Es 0) (tc_selfbutter init')) = norm (tc_selfbutter init')" 
+    by (intro trace_preserving_map_kf_apply) 
        (auto simp add: tc_selfbutter_def assms(1)[OF 0])
   then show ?case using assms by auto 
 next
   case (Suc n)
   have "n<d+1" using Suc by auto
-  have "norm (kraus_family_map (Es (Suc n))
+  have "norm (kf_apply (Es (Suc n))
        (sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n) (run_mixed_adv n Es UB init' X' Y' H))) =
     norm (sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n) (run_mixed_adv n Es UB init' X' Y' H))"
-    by (intro trace_preserving_map_kraus_family_map) 
+    by (intro trace_preserving_map_kf_apply) 
        (auto simp add: assms(1)[OF Suc(2)] run_mixed_adv_pos sandwich_tc_pos)
   also have "\<dots> =  norm (run_mixed_adv n Es UB init' X' Y' H)" 
     by (intro norm_sandwich_tc_unitary) (use iso_UB[OF \<open>n<d+1\<close>] 
@@ -210,7 +210,7 @@ lemma run_mixed_A_pos:
 unfolding run_mixed_A_def by (rule run_mixed_adv_pos)
 
 lemma norm_run_mixed_A:
-assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 shows "norm (run_mixed_A F H) \<le> 1"
 unfolding run_mixed_A_def  
 by (intro norm_run_mixed_adv) (auto simp add: norm_init assms)
@@ -296,7 +296,7 @@ unfolding run_pure_B_tc_def by (rule run_pure_adv_tc_pos)
 text \<open>For mixed adversaries\<close>
 definition run_mixed_B  ::
  "'mem kraus_adv \<Rightarrow> ('x \<Rightarrow> 'y) \<Rightarrow> ('x \<Rightarrow> bool) \<Rightarrow> ('mem \<times> 'l) tc_op"where
-"run_mixed_B kraus_B H S = run_mixed_adv d (\<lambda>n. kraus_family_Fst (kraus_B n)) 
+"run_mixed_B kraus_B H S = run_mixed_adv d (\<lambda>n. kf_Fst (kraus_B n)) 
   (US S) init_B X_for_B Y_for_B H"
 
 
@@ -305,20 +305,20 @@ lemma run_mixed_B_pos:
 unfolding run_mixed_B_def by (rule run_mixed_adv_pos)
 
 lemma norm_run_mixed_B:
-assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 shows "norm (run_mixed_B F H S) \<le> 1"
 unfolding run_mixed_B_def  proof (intro norm_run_mixed_adv, goal_cases)
   case (1 i)
-  have "kraus_family_bound (kraus_family_Fst (F i)) \<le> kraus_family_bound (F i) \<otimes>\<^sub>o id_cblinfun"
-    using kraus_family_bound_kraus_family_Fst by auto
+  have "kf_bound (kf_Fst (F i)) \<le> kf_bound (F i) \<otimes>\<^sub>o id_cblinfun"
+    using kf_bound_kf_Fst by auto
   also have "\<dots> \<le> id_cblinfun \<otimes>\<^sub>o id_cblinfun" 
     by (intro tensor_op_mono_left[OF assms[OF 1]], auto)
   finally show ?case by auto
 qed (auto simp add: register_XY_for_B norm_init_B norm_US assms)
 
 lemma trace_preserving_norm_run_mixed_B:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map 
-  (kraus_family_Fst (F i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
+assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+  (kf_Fst (F i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
 shows "norm (run_mixed_B F H S) = 1"
 unfolding run_mixed_B_def
 by (intro trace_preserving_norm_run_mixed_adv)
@@ -406,7 +406,7 @@ unfolding run_pure_B_count_tc_def by (rule run_pure_adv_tc_pos)
 text \<open>For mixed adversaries\<close>
 definition run_mixed_B_count  ::
  "'mem kraus_adv \<Rightarrow> ('x \<Rightarrow> 'y) \<Rightarrow> ('x \<Rightarrow> bool) \<Rightarrow> ('mem \<times> nat) tc_op" where
-"run_mixed_B_count kraus_B H S = run_mixed_adv d (\<lambda>n. kraus_family_Fst (kraus_B n)) 
+"run_mixed_B_count kraus_B H S = run_mixed_adv d (\<lambda>n. kf_Fst (kraus_B n)) 
   (\<lambda>n. U_S' S) init_B_count X_for_C Y_for_C H"
 
 
@@ -415,20 +415,20 @@ lemma run_mixed_B_count_pos:
 unfolding run_mixed_B_count_def by (rule run_mixed_adv_pos)
 
 lemma norm_run_mixed_B_count:
-assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+assumes F_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 shows "norm (run_mixed_B_count F H S) \<le> 1"
 unfolding run_mixed_B_count_def  proof (intro norm_run_mixed_adv, goal_cases)
   case (1 i)
-  have "kraus_family_bound (kraus_family_Fst (F i)) \<le> kraus_family_bound (F i) \<otimes>\<^sub>o id_cblinfun"
-    using kraus_family_bound_kraus_family_Fst by auto
+  have "kf_bound (kf_Fst (F i)) \<le> kf_bound (F i) \<otimes>\<^sub>o id_cblinfun"
+    using kf_bound_kf_Fst by auto
   also have "\<dots> \<le> id_cblinfun \<otimes>\<^sub>o id_cblinfun" 
     by (intro tensor_op_mono_left[OF assms[OF 1]], auto)
   finally show ?case by auto
 qed (auto simp add: register_XY_for_C norm_init_B_count norm_U_S' assms)
 
 lemma trace_preserving_norm_run_mixed_B_count:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map 
-  (kraus_family_Fst (F i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
+assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+  (kf_Fst (F i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
 shows "norm (run_mixed_B_count F H S) = 1"
 unfolding run_mixed_B_count_def
 by (intro trace_preserving_norm_run_mixed_adv)

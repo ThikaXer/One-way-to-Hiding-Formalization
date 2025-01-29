@@ -24,7 +24,7 @@ assumes distr_pos: "\<forall>(H,G,S,z)\<in>carrier. distr (H,G,S,z) \<ge> 0"
         "\<And>H G S z. (H,G,S,z)\<in>carrier \<Longrightarrow> x \<in> - Collect S \<Longrightarrow> H x = G x"
 
 fixes E:: "'mem kraus_adv"
-assumes E_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (E i) \<le> id_cblinfun"
+assumes E_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (E i) \<le> id_cblinfun"
 assumes E_nonzero: "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (E i) \<noteq> {}"
 
 fixes P:: "'mem update"
@@ -33,8 +33,8 @@ assumes is_Proj_P: "is_Proj P"
 begin
 
 lemma Fst_E_nonzero:
-"\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (kraus_family_Fst (E i)) \<noteq> {}"
-using E_nonzero by (simp add: kraus_family_Fst.rep_eq)
+"\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (kf_Fst (E i)) \<noteq> {}"
+using E_nonzero by (simp add: kf_Fst.rep_eq)
 
 text \<open>Some properties of the joint distribution.\<close>
 
@@ -383,24 +383,24 @@ qed
 
 
 lemma run_mixed_adv_projection_finite:
-assumes "\<And>i. i < n + 1 \<Longrightarrow> finite (Rep_kraus_family (kraus_family_Fst (F i)::
+assumes "\<And>i. i < n + 1 \<Longrightarrow> finite (Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
-and "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (kraus_family_Fst (F i)::
+and "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family) \<noteq> {}"
 assumes "n<d+1"
 shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
-  (run_mixed_adv n (\<lambda>n. kraus_family_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
-  run_mixed_adv n (\<lambda>n. kraus_family_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
+  (run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
+  run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
 proof -
   have "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
     (run_pure_adv_tc n x (US S) init_B X_for_B Y_for_B H) =
     run_pure_adv_tc n x (US S) init_B X_for_B Y_for_B H" 
-    if "x \<in> purify_comp_kraus n (\<lambda>n. kraus_family_Fst (F n))" for x
+    if "x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n))" for x
   proof -
     have *: "(\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (F i) \<noteq> {})" 
-      using assms(2) unfolding fst_Rep_kraus_family_Fst by auto
+      using assms(2) unfolding fst_Rep_kf_Fst by auto
     obtain UA where x:"x = (\<lambda>a. if a < n+1 then Fst (UA a) else undefined)" using 
-      purification_kraus_family_Fst[OF * \<open>x \<in> purify_comp_kraus n (\<lambda>n. kraus_family_Fst (F n))\<close>]
+      purification_kf_Fst[OF * \<open>x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n))\<close>]
       by auto
     show ?thesis using assms by (intro run_pure_adv_projection[of n _ UA "(\<lambda>_. undefined)" S H]) 
       (auto simp add: x)
@@ -412,26 +412,26 @@ qed
 
 
 lemma run_mixed_adv_projection:
-assumes "\<And>i. i < d + 1 \<Longrightarrow> fst ` Rep_kraus_family (kraus_family_Fst (F i)::
+assumes "\<And>i. i < d + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family) \<noteq> {}"
 assumes "n<d+1"
 shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
-  (run_mixed_adv n (\<lambda>n. kraus_family_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
-  run_mixed_adv n (\<lambda>n. kraus_family_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
+  (run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
+  run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
 proof -
-  define \<rho> where "\<rho> = run_mixed_adv n (\<lambda>n. kraus_family_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
+  define \<rho> where "\<rho> = run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
   define \<rho>sum where 
-    "\<rho>sum F' = run_mixed_adv n (\<lambda>n. kraus_family_Fst (F' n)) (US S) init_B X_for_B Y_for_B H" for F'
+    "\<rho>sum F' = run_mixed_adv n (\<lambda>n. kf_Fst (F' n)) (US S) init_B X_for_B Y_for_B H" for F'
   have \<rho>_has_sum': "((\<lambda>F'. run_mixed_adv n F' (US S) init_B X_for_B Y_for_B H) has_sum \<rho>)
-     (finite_kraus_subadv (\<lambda>m. kraus_family_Fst (F m)) n)"
+     (finite_kraus_subadv (\<lambda>m. kf_Fst (F m)) n)"
     unfolding \<rho>_def using run_mixed_adv_has_sum by blast
   then have \<rho>_has_sum: "(\<rho>sum has_sum \<rho>) (finite_kraus_subadv F n)" 
   proof -
-    have inj: "inj_on (\<lambda>f. \<lambda>n\<in>{0..<n+1}. kraus_family_Fst (f n)) (finite_kraus_subadv F n)" 
-      using inj_on_kraus_family_Fst by auto
+    have inj: "inj_on (\<lambda>f. \<lambda>n\<in>{0..<n+1}. kf_Fst (f n)) (finite_kraus_subadv F n)" 
+      using inj_on_kf_Fst by auto
     have rew: "\<rho>sum = (\<lambda>f. run_mixed_adv n f (US S) init_B X_for_B Y_for_B H) o 
-      (\<lambda>f. \<lambda>n\<in>{0..<n+1}. kraus_family_Fst (f n))" unfolding \<rho>sum_def
-    using run_mixed_adv_kraus_family_Fst_restricted[where init' = init_B and X' = X_for_B and Y'=Y_for_B] 
+      (\<lambda>f. \<lambda>n\<in>{0..<n+1}. kf_Fst (f n))" unfolding \<rho>sum_def
+    using run_mixed_adv_kf_Fst_restricted[where init' = init_B and X' = X_for_B and Y'=Y_for_B] 
     by auto
     show ?thesis unfolding rew  by (subst has_sum_reindex[OF inj, symmetric]) 
       (unfold finite_kraus_subadv_Fst_invert[symmetric], rule \<rho>_has_sum')
@@ -440,12 +440,12 @@ proof -
     if "x \<in> (finite_kraus_subadv F n)" for x unfolding \<rho>sum_def o_def
   proof (intro run_mixed_adv_projection_finite, goal_cases)
     case (1 i)
-    then show ?case using finite_kraus_family_Fst[OF fin_subadv_fin_Rep_kraus_family[OF that]] assms 
+    then show ?case using finite_kf_Fst[OF fin_subadv_fin_Rep_kraus_family[OF that]] assms 
       by auto
   next
     case (2 i)
     then show ?case using fin_subadv_nonzero[OF that] assms 
-      unfolding fst_Rep_kraus_family_Fst by auto
+      unfolding fst_Rep_kf_Fst by auto
   qed (use assms in \<open>auto\<close>)
   have sand_has_sum_rho: "(sandwich_tc (Proj_ket_upto (has_bits_upto n)) o \<rho>sum has_sum \<rho>) 
     (finite_kraus_subadv (F) n)" 
@@ -475,42 +475,42 @@ unfolding Snd_def by (simp add: UqueryH_tensor_id_cblinfunB comp_tensor_op)
 lemma run_mixed_adv_G_H_same:
 assumes "(H,G,S,z)\<in>carrier" "n<d+1"
 shows "sandwich_tc (Snd (selfbutter (ket empty))) 
-    (run_mixed_adv n (\<lambda>n. kraus_family_Fst (E n)) (US S) init_B X_for_B Y_for_B H) =
+    (run_mixed_adv n (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B H) =
   sandwich_tc (Snd (selfbutter (ket empty)))
-    (run_mixed_adv n (\<lambda>n. kraus_family_Fst (E n)) (US S) init_B X_for_B Y_for_B G)"
+    (run_mixed_adv n (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B G)"
 using assms(2) proof (induct n)
   case (Suc n)
   have "n<d" "n<Suc d" using Suc by auto
   let ?P = "Snd (selfbutter (ket empty))"
   let ?P' = "Proj_ket_upto (has_bits_upto n)"
-  let ?\<rho> = "(\<lambda>x Y. (run_mixed_adv x (\<lambda>n. kraus_family_Fst (E n)) (US S) init_B X_for_B Y_for_B Y))"
-  have "sandwich_tc ?P (?\<rho> (Suc n) H) = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  let ?\<rho> = "(\<lambda>x Y. (run_mixed_adv x (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B Y))"
+  have "sandwich_tc ?P (?\<rho> (Suc n) H) = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc (?P o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S n) (?\<rho> n H))"
-    using sandwich_tc_kraus_family_map_Fst by (auto simp add: sandwich_tc_compose')
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+    using sandwich_tc_kf_apply_Fst by (auto simp add: sandwich_tc_compose')
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L ?P o\<^sub>C\<^sub>L US S n o\<^sub>C\<^sub>L ?P') (?\<rho> n H))"
     by (subst Proj_commutes_with_Uquery, subst run_mixed_adv_projection[symmetric])
        (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L Fst (not_S_embed S) o\<^sub>C\<^sub>L ?P) (?\<rho> n H))"
      using selfbutter_empty_US_Proj_ket_upto[OF \<open>n<d\<close>]
      by (metis (no_types, lifting) sandwich_tc_compose')
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L Fst (not_S_embed S) o\<^sub>C\<^sub>L ?P) (?\<rho> n H))"
     using Uquery_G_H_same_on_not_S_embed_tensor assms by auto
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L Fst (not_S_embed S) o\<^sub>C\<^sub>L ?P) (?\<rho> n G))"
     using Suc by (auto simp add: sandwich_tc_compose')
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L ?P o\<^sub>C\<^sub>L US S n o\<^sub>C\<^sub>L ?P') (?\<rho> n G))"
     using selfbutter_empty_US_Proj_ket_upto[OF \<open>n<d\<close>]
      by (metis (no_types, lifting) sandwich_tc_compose')
-  also have "\<dots> = kraus_family_map (kraus_family_Fst (E (Suc n)))
+  also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc (?P o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L US S n) (?\<rho> n G))" 
   by (subst Proj_commutes_with_Uquery, subst (2) run_mixed_adv_projection[symmetric])
      (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
   also have "\<dots> = sandwich_tc ?P (?\<rho> (Suc n) G)"
-    using sandwich_tc_kraus_family_map_Fst[symmetric] by (auto simp add: sandwich_tc_compose')
+    using sandwich_tc_kf_apply_Fst[symmetric] by (auto simp add: sandwich_tc_compose')
   finally show ?case by auto
 qed auto
 
@@ -522,11 +522,11 @@ sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E G S)"
 proof -
   have "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E H S) =
     sandwich_tc (Q \<otimes>\<^sub>o id_cblinfun) (sandwich_tc (Snd (selfbutter (ket empty)))
-     (run_mixed_adv d (\<lambda>n. kraus_family_Fst (E n)) (US S) init_B X_for_B Y_for_B H))"
+     (run_mixed_adv d (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B H))"
     unfolding run_mixed_B_def 
     by (auto simp add: sandwich_tc_compose'[symmetric] Snd_def comp_tensor_op)
   also have "\<dots>  = sandwich_tc (Q \<otimes>\<^sub>o id_cblinfun) (sandwich_tc (Snd (selfbutter (ket empty)))
-     (run_mixed_adv d (\<lambda>n. kraus_family_Fst (E n)) (US S) init_B X_for_B Y_for_B G))"
+     (run_mixed_adv d (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B G))"
     using run_mixed_adv_G_H_same[where n=d, OF assms] by auto
   also have "\<dots> = sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E G S)"
     unfolding run_mixed_B_def 
@@ -702,20 +702,20 @@ text \<open>The general version of the O2H with terminating adversary. This form
 Theorem 1.\<close>
 
 theorem mixed_o2h_term:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  4 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
 and 
 "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have normGright: "norm (mixed_G.\<rho>right E) = 1" 
-    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normGcount: "norm (mixed_G.\<rho>count E) = 1" 
-    by (rule mixed_G.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_G.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have norm: "norm (mixed_H.\<rho>right E) = norm (mixed_G.\<rho>right E)" using normHright normGright by auto
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
@@ -771,7 +771,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_2:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -780,9 +780,9 @@ and
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
@@ -842,7 +842,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_3:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -851,9 +851,9 @@ and
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
@@ -899,7 +899,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_4:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -908,9 +908,9 @@ and
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
@@ -985,7 +985,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -994,9 +994,9 @@ and
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
@@ -1044,13 +1044,13 @@ qed
 
 
 lemma Pright_G_H_case5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows "mixed_H.Pright Proj_5 = mixed_G.Pright Proj_5"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   moreover have normGright: "norm (mixed_G.\<rho>right E) = 1" 
-    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   ultimately show ?thesis using Pright_G_H_case5_nonterm by auto
 qed
 
@@ -1084,7 +1084,7 @@ qed
 
 
 theorem mixed_o2h_term_6:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -1093,11 +1093,11 @@ and
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normGright: "norm (mixed_G.\<rho>right E) = 1" 
-    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_G.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
   have normHcount: "norm (mixed_H.\<rho>count E) = 1" 
-    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kraus_family_Fst[OF assms]])
+    by (rule mixed_H.trace_preserving_norm_\<rho>count[OF trace_preserving_kf_Fst[OF assms]])
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 

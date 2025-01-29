@@ -35,7 +35,7 @@ locale mixed_o2h = o2h_setting "TYPE('x)" "TYPE('y::group_add)" "TYPE('mem)" "TY
 
 (* fix the adversary! *)
   fixes E:: "'mem kraus_adv"
-  assumes E_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (E i) \<le> id_cblinfun"
+  assumes E_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (E i) \<le> id_cblinfun"
   assumes E_nonzero: "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (E i) \<noteq> {}"
 
   fixes P:: "'mem update"
@@ -176,8 +176,8 @@ qed
 
 
 lemma trace_preserving_norm_\<rho>right:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map 
-  (kraus_family_Fst (E i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
+assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+  (kf_Fst (E i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
 shows "norm (\<rho>right E) = 1"
 proof -
   have "norm (\<Sum>(H, S, z)\<in>carrier. (distr (H, S, z)) *\<^sub>C run_mixed_B E H S) = 
@@ -195,8 +195,8 @@ proof -
 qed
 
 lemma trace_preserving_norm_\<rho>count:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kraus_family_map 
-  (kraus_family_Fst (E i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
+assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+  (kf_Fst (E i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
 shows "norm (\<rho>count E) = 1"
 proof -
   have "norm (\<Sum>(H, S, z)\<in>carrier. (distr (H, S, z)) *\<^sub>C run_mixed_B_count E H S) = 
@@ -820,7 +820,7 @@ qed
 
 lemma error_term_pos:
 assumes finite: "\<And>i. i < d+1 \<Longrightarrow> finite (Rep_kraus_family (F i))"
-and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 and F_nonzero: "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (F i) \<noteq> {}"
 shows "0 \<le> (d + 1) * Re (Pfind F) + d * P_nonterm F"
 proof -
@@ -1015,7 +1015,7 @@ text \<open>Step 3: prove the mixed O2H only for finite kraus maps using the pur
 
 lemma estimate_Pfind_finite_sqrt:
 assumes finite: "\<And>i. i < d+1 \<Longrightarrow> finite (Rep_kraus_family (F i))"
-and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 and F_nonzero: "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (F i) \<noteq> {}"
 and norm_Q: "norm Q \<le> 1"
 shows "\<bar>csqrt (PM Q (tc_tensor (\<rho>left F) empty_tc)) - csqrt (PM Q (\<rho>right F))\<bar> \<le> 
@@ -1080,7 +1080,7 @@ qed
 
 lemma estimate_Pfind_finite_sqrt':
 assumes finite: "\<And>i. i < d+1 \<Longrightarrow> finite (Rep_kraus_family (F i))"
-and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kraus_family_bound (F i) \<le> id_cblinfun"
+and F_norm_id:"\<And>i. i < d+1 \<Longrightarrow> kf_bound (F i) \<le> id_cblinfun"
 and F_nonzero: "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (F i) \<noteq> {}"
 and norm_Q: "norm Q \<le> 1"
 shows "\<bar>sqrt (Re (PM Q (tc_tensor (\<rho>left F) empty_tc))) - sqrt (Re (PM Q (\<rho>right F)))\<bar> \<le> 
@@ -1153,9 +1153,9 @@ proof -
       then show ?case using fin_subadv_fin_Rep_kraus_family 1 by auto
     next
       case (2 i)
-      have "kraus_family_bound (F i) \<le> kraus_family_bound (E i)" 
-      by (meson "1"(2) "2" Set.basic_monos(7) finite_kraus_subadv_I kraus_family_bound_of_elems that)
-      also have "kraus_family_bound (E i) \<le> id_cblinfun" using "2" E_norm_id by auto
+      have "kf_bound (F i) \<le> kf_bound (E i)" 
+      by (meson "1"(2) "2" Set.basic_monos(7) finite_kraus_subadv_I kf_bound_of_elems that)
+      also have "kf_bound (E i) \<le> id_cblinfun" using "2" E_norm_id by auto
       finally show ?case by linarith
     next
       case (3 i)

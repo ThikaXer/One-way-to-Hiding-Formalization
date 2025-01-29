@@ -25,13 +25,13 @@ definition comp_upto :: "(nat \<Rightarrow> ('a::chilbert_space) \<Rightarrow>\<
 
 text \<open>Some auxiliary lemmas on injectivity, Fst and finiteness.\<close>
 
-lemma Rep_kraus_family_id:
-"Rep_kraus_family kraus_family_id = {(id_cblinfun,())}"
-  by (simp add: kraus_family_id_def kraus_family_of_op.rep_eq del: kraus_family_of_op_id)
+lemma Rep_kf_id:
+"Rep_kraus_family kf_id = {(id_cblinfun,())}"
+  by (simp add: kf_id_def kf_of_op.rep_eq del: kf_of_op_id)
 
-lemma fst_Rep_kraus_family_Fst:
+lemma fst_Rep_kf_Fst:
 fixes \<EE> :: "('a ell2, 'b ell2, unit) kraus_family"
-shows "fst ` (Rep_kraus_family (kraus_family_Fst \<EE>)) =  Fst ` (fst ` (Rep_kraus_family \<EE>))"
+shows "fst ` (Rep_kraus_family (kf_Fst \<EE>)) =  Fst ` (fst ` (Rep_kraus_family \<EE>))"
 proof (transfer, safe, goal_cases)
   case (1 \<EE> x a aa)
   then have "aa \<in>fst `\<EE>" by (metis fst_conv image_eqI)
@@ -47,15 +47,15 @@ shows "inj_on Fst A"
 unfolding Fst_def inj_on_def using inj_tensor_left[OF id_cblinfun_not_0] unfolding inj_def by auto
 
 
-lemma finite_kraus_family_Fst:
+lemma finite_kf_Fst:
 fixes \<EE> :: "('mem ell2, 'mem ell2, unit) kraus_family"
 assumes "finite (Rep_kraus_family \<EE>)"
-shows "finite (Rep_kraus_family (kraus_family_Fst \<EE>))"
+shows "finite (Rep_kraus_family (kf_Fst \<EE>))"
 using assms by transfer auto
 
-lemma finite_kraus_family_id:
-"finite (Rep_kraus_family kraus_family_id)"
-by (simp add: Rep_kraus_family_id)
+lemma finite_kf_id:
+"finite (Rep_kraus_family kf_id)"
+by (simp add: Rep_kf_id)
 
 
 lemma inj_on_fst_Rep_kraus_family:
@@ -75,17 +75,17 @@ text \<open>Showing conditions of Kraus maps.\<close>
 
 lemma norm_square_in_kraus_map:
 fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
-assumes "kraus_family_bound \<EE> \<le> id_cblinfun"
+assumes "kf_bound \<EE> \<le> id_cblinfun"
 assumes "U \<in> fst ` Rep_kraus_family \<EE>"
 shows "U* o\<^sub>C\<^sub>L U \<le> id_cblinfun"
 proof -
   have *: "{(U, ())} \<subseteq> Rep_kraus_family \<EE>" using assms(2) by auto
-  show ?thesis using kraus_family_sums_bounded_by_bound[OF *] assms(1) by auto
+  show ?thesis using kf_sums_bounded_by_bound[OF *] assms(1) by auto
 qed
 
 lemma norm_in_kraus_map:
 fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
-assumes "kraus_family_bound \<EE> \<le> id_cblinfun"
+assumes "kf_bound \<EE> \<le> id_cblinfun"
 assumes "U \<in> fst ` Rep_kraus_family \<EE>"
 shows "norm U \<le> 1"
 using norm_square_in_kraus_map[OF assms] cond_to_norm_1 by auto
@@ -101,7 +101,7 @@ qed
 
 lemma norm_in_purify_comp_kraus:
 fixes \<EE> :: "nat \<Rightarrow> ('a ell2, 'a ell2, unit) kraus_family"
-assumes "\<And>i. i<n+1 \<Longrightarrow> kraus_family_bound (\<EE> i) \<le> id_cblinfun"
+assumes "\<And>i. i<n+1 \<Longrightarrow> kf_bound (\<EE> i) \<le> id_cblinfun"
 assumes "UA \<in> purify_comp_kraus n \<EE>" 
 shows "\<And>i. i<n+1 \<Longrightarrow> norm (UA i) \<le> 1"
 proof -
@@ -136,9 +136,9 @@ shows "run_mixed_adv n \<EE> UB init' X' Y' H =
 unfolding purify_comp_kraus_def using assms
 proof (induct n)
   case 0
-  have "kraus_family_map (\<EE> 0) (tc_selfbutter init') = 
+  have "kf_apply (\<EE> 0) (tc_selfbutter init') = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc E (tc_selfbutter init'))"
-    unfolding kraus_family_map.rep_eq using assms 
+    unfolding kf_apply.rep_eq using assms 
     by (subst sum.reindex) (auto simp add: inj_on_fst_Rep_kraus_family d_gr_0) 
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (UAs 0) (tc_selfbutter init')) = 
@@ -165,9 +165,9 @@ next
     by (metis atLeastLessThan_iff inj_combinator less_irrefl_nat)
   let ?\<Phi> = "sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB d)(run_mixed_adv d \<EE> UB init' X' Y' H)"
   let ?\<Psi> = "(\<lambda>UAs. run_pure_adv_tc d UAs UB init' X' Y' H)"
-  have kraus: "kraus_family_map (\<EE> (Suc d)) ?\<Phi> = 
+  have kraus: "kf_apply (\<EE> (Suc d)) ?\<Phi> = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> (Suc d))). sandwich_tc E ?\<Phi>)"
-    unfolding kraus_family_map.rep_eq using assms 
+    unfolding kf_apply.rep_eq using assms 
     by (subst sum.reindex) (auto simp add: inj_on_fst_Rep_kraus_family Suc)
   also have "\<dots> = (\<Sum>UA\<in>fst ` Rep_kraus_family (\<EE> (Suc d)).
      (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).  sandwich_tc UA
@@ -205,18 +205,18 @@ unfolding run_mixed_B_def run_pure_B_tc_def purify_comp_kraus_def
 using assms
 proof (induct d)
   case 0
-  let ?\<EE>0 = "kraus_family_Fst (\<EE> 0)"
+  let ?\<EE>0 = "kf_Fst (\<EE> 0)"
   have finite: "finite (Rep_kraus_family ?\<EE>0)" 
-    using finite_kraus_family_Fst assms(1)  by auto
+    using finite_kf_Fst assms(1)  by auto
   have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)" using inj_on_fst_Rep_kraus_family by auto
   have inj2: "inj_on Fst (fst ` Rep_kraus_family (\<EE> 0))" using inj_on_Fst by auto
-  have *: "kraus_family_map ?\<EE>0 (tc_selfbutter init_B) = 
+  have *: "kf_apply ?\<EE>0 (tc_selfbutter init_B) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family ?\<EE>0). sandwich_tc E (tc_selfbutter init_B))"
-    unfolding kraus_family_map.rep_eq
+    unfolding kf_apply.rep_eq
     by (subst sum.reindex) (auto simp add: infsum_finite[OF finite] inj1 ) 
-  have "kraus_family_map ?\<EE>0 (tc_selfbutter init_B) = 
+  have "kf_apply ?\<EE>0 (tc_selfbutter init_B) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B))"
-    unfolding * fst_Rep_kraus_family_Fst by (subst sum.reindex) (auto simp add: o_def inj2)
+    unfolding * fst_Rep_kf_Fst by (subst sum.reindex) (auto simp add: o_def inj2)
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs 0)) (tc_selfbutter init_B)) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B))"
@@ -237,25 +237,25 @@ proof (induct d)
   ultimately show ?case by auto
 next
   case (Suc d)
-  let ?\<EE> = "(\<lambda>i. kraus_family_Fst (\<EE> i))"
+  let ?\<EE> = "(\<lambda>i. kf_Fst (\<EE> i))"
   have inj1: "inj_on (\<lambda>(y, g). g(Suc d := y))(fst ` Rep_kraus_family (\<EE> (Suc d)) \<times>
       (\<Pi>\<^sub>E i\<in>{0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)))"
     by (metis atLeastLessThan_iff inj_combinator less_irrefl_nat)
   let ?\<Phi> = "sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d)
     (run_mixed_adv d ?\<EE> (US S) init_B X_for_B Y_for_B H)"
   let ?\<Psi> = "(\<lambda>UAs. run_pure_adv_tc d UAs (US S) init_B X_for_B Y_for_B H)"
-  have finite: "finite (Rep_kraus_family (kraus_family_Fst (\<EE> (Suc d))))"
-    using Suc.prems(1) finite_kraus_family_Fst by auto
-  have "kraus_family_map (?\<EE> (Suc d)) ?\<Phi> = 
-    (\<Sum>E\<in>fst ` Rep_kraus_family (kraus_family_Fst (\<EE> (Suc d))). sandwich_tc E ?\<Phi>)"
-    by (subst sum.reindex) (auto simp add: kraus_family_map.rep_eq infsum_finite[OF finite] 
+  have finite: "finite (Rep_kraus_family (kf_Fst (\<EE> (Suc d))))"
+    using Suc.prems(1) finite_kf_Fst by auto
+  have "kf_apply (?\<EE> (Suc d)) ?\<Phi> = 
+    (\<Sum>E\<in>fst ` Rep_kraus_family (kf_Fst (\<EE> (Suc d))). sandwich_tc E ?\<Phi>)"
+    by (subst sum.reindex) (auto simp add: kf_apply.rep_eq infsum_finite[OF finite] 
         inj_on_fst_Rep_kraus_family)
   also have "\<dots> =  (\<Sum>E\<in>fst ` Rep_kraus_family (\<EE> (Suc d)). sandwich_tc (Fst E) ?\<Phi>)"
-    unfolding fst_Rep_kraus_family_Fst by (subst sum.reindex) (auto simp add: inj_on_Fst)
+    unfolding fst_Rep_kf_Fst by (subst sum.reindex) (auto simp add: inj_on_Fst)
   also have "\<dots> = (\<Sum>UA\<in>fst ` Rep_kraus_family (\<EE> (Suc d)).
      (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).  sandwich_tc (Fst UA)
       (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d) (?\<Psi> (Fst o UAs)))))" 
-    using Suc unfolding kraus_family_Fst_def[symmetric] by (intro sum.cong)(auto simp add: sandwich_tc_sum o_def)
+    using Suc unfolding kf_Fst_def[symmetric] by (intro sum.cong)(auto simp add: sandwich_tc_sum o_def)
   also have "\<dots> = (\<Sum>(UA,UAs)\<in>fst ` Rep_kraus_family (\<EE> (Suc d))\<times> 
     (\<Pi>\<^sub>E i\<in>{0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).
     sandwich_tc (Fst UA) (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d) (?\<Psi> (Fst o UAs))))"
@@ -268,7 +268,7 @@ next
   also have "\<dots> = (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>insert (Suc d) {0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs (Suc d)) o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d) (?\<Psi> (Fst o UAs)))"
     by (subst PiE_insert_eq) auto
-  finally show ?case unfolding kraus_family_Fst_def by (auto simp add: set_upt_Suc o_def)
+  finally show ?case unfolding kf_Fst_def by (auto simp add: set_upt_Suc o_def)
 qed
 
 
@@ -276,7 +276,7 @@ lemma purification_run_mixed_B_count_prep:
 assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
 assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
 assumes "n<d+1"
-shows "run_mixed_adv n (\<lambda>n. kraus_family_Fst (\<EE> n)) (\<lambda>n. U_S' S)
+shows "run_mixed_adv n (\<lambda>n. kf_Fst (\<EE> n)) (\<lambda>n. U_S' S)
      init_B_count X_for_C Y_for_C H =
     (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<n + 1}. fst ` Rep_kraus_family (\<EE> i)).
        run_pure_adv_tc n (Fst \<circ> UAs) (\<lambda>_. U_S' S) init_B_count X_for_C
@@ -284,18 +284,18 @@ shows "run_mixed_adv n (\<lambda>n. kraus_family_Fst (\<EE> n)) (\<lambda>n. U_S
 using assms
 proof (induct n)
   case 0
-  let ?\<EE>0 = "kraus_family_Fst (\<EE> 0)"
+  let ?\<EE>0 = "kf_Fst (\<EE> 0)"
   have finite: "finite (Rep_kraus_family ?\<EE>0)" 
-    using finite_kraus_family_Fst assms by auto
+    using finite_kf_Fst assms by auto
   have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)" using inj_on_fst_Rep_kraus_family by auto
   have inj2: "inj_on Fst (fst ` Rep_kraus_family (\<EE> 0))" using inj_on_Fst by auto
-  have *: "kraus_family_map ?\<EE>0 (tc_selfbutter init_B_count) = 
+  have *: "kf_apply ?\<EE>0 (tc_selfbutter init_B_count) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family ?\<EE>0). sandwich_tc E (tc_selfbutter init_B_count))"
-    unfolding kraus_family_map.rep_eq
+    unfolding kf_apply.rep_eq
     by (subst sum.reindex) (auto simp add: infsum_finite[OF finite] inj1 ) 
-  have "kraus_family_map ?\<EE>0 (tc_selfbutter init_B_count) = 
+  have "kf_apply ?\<EE>0 (tc_selfbutter init_B_count) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B_count))"
-    unfolding * fst_Rep_kraus_family_Fst by (subst sum.reindex) (auto simp add: o_def inj2)
+    unfolding * fst_Rep_kf_Fst by (subst sum.reindex) (auto simp add: o_def inj2)
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs 0)) (tc_selfbutter init_B_count)) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B_count))"
@@ -316,7 +316,7 @@ proof (induct n)
   ultimately show ?case by auto
 next
   case (Suc n)
-  define \<EE>' :: "('mem\<times>nat) kraus_adv" where "\<EE>' = (\<lambda>i. kraus_family_Fst (\<EE> i))"
+  define \<EE>' :: "('mem\<times>nat) kraus_adv" where "\<EE>' = (\<lambda>i. kf_Fst (\<EE> i))"
   have inj1: "inj_on (\<lambda>(y, g). g(Suc n := y))(fst ` Rep_kraus_family (\<EE> (Suc n)) \<times>
       (\<Pi>\<^sub>E i\<in>{0..<Suc n}. fst ` Rep_kraus_family (\<EE> i)))"
     by (metis atLeastLessThan_iff inj_combinator less_irrefl_nat)
@@ -324,19 +324,19 @@ next
     (run_mixed_adv n \<EE>' (\<lambda>_. U_S' S) init_B_count X_for_C Y_for_C H)"
   define \<Psi> where "\<Psi> = (\<lambda>UAs. run_pure_adv_tc n UAs (\<lambda>_. U_S' S) init_B_count X_for_C Y_for_C H)"
 
-  have finite: "finite (Rep_kraus_family (kraus_family_Fst (\<EE> (Suc n))))"
-    using Suc.prems finite_kraus_family_Fst by auto
-  have "kraus_family_map (\<EE>' (Suc n)) ?\<Phi> = 
-    (\<Sum>E\<in>fst ` Rep_kraus_family (kraus_family_Fst (\<EE> (Suc n))). sandwich_tc E ?\<Phi>)"
+  have finite: "finite (Rep_kraus_family (kf_Fst (\<EE> (Suc n))))"
+    using Suc.prems finite_kf_Fst by auto
+  have "kf_apply (\<EE>' (Suc n)) ?\<Phi> = 
+    (\<Sum>E\<in>fst ` Rep_kraus_family (kf_Fst (\<EE> (Suc n))). sandwich_tc E ?\<Phi>)"
     unfolding \<EE>'_def
-    by (subst sum.reindex) (auto simp add: kraus_family_map.rep_eq infsum_finite[OF finite] 
+    by (subst sum.reindex) (auto simp add: kf_apply.rep_eq infsum_finite[OF finite] 
         inj_on_fst_Rep_kraus_family)
   also have "\<dots> =  (\<Sum>E\<in>fst ` Rep_kraus_family (\<EE> (Suc n)). sandwich_tc (Fst E) ?\<Phi>)"
-    unfolding fst_Rep_kraus_family_Fst by (subst sum.reindex) (auto simp add: inj_on_Fst)
+    unfolding fst_Rep_kf_Fst by (subst sum.reindex) (auto simp add: inj_on_Fst)
   also have "\<dots> = (\<Sum>UA\<in>fst ` Rep_kraus_family (\<EE> (Suc n)).
      (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<Suc n}. fst ` Rep_kraus_family (\<EE> i)).  sandwich_tc (Fst UA)
       (sandwich_tc ((X_for_C;Y_for_C) (Uquery H) o\<^sub>C\<^sub>L U_S' S) (\<Psi> (Fst o UAs)))))" 
-    using Suc  unfolding kraus_family_Fst_def[symmetric] \<Psi>_def \<EE>'_def
+    using Suc  unfolding kf_Fst_def[symmetric] \<Psi>_def \<EE>'_def
     by (auto simp add: sandwich_tc_sum o_def intro!: sum.cong)
   also have "\<dots> = (\<Sum>(UA,UAs)\<in>fst ` Rep_kraus_family (\<EE> (Suc n))\<times> 
     (\<Pi>\<^sub>E i\<in>{0..<Suc n}. fst ` Rep_kraus_family (\<EE> i)). sandwich_tc (Fst UA) 
@@ -354,7 +354,7 @@ next
     by (subst PiE_insert_eq) auto
   also have "\<dots> = (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<Suc n + 1}. fst ` Rep_kraus_family (\<EE> i)).
     run_pure_adv_tc (Suc n) (Fst \<circ> UAs) (\<lambda>_. U_S' S) init_B_count X_for_C Y_for_C H)"
-    unfolding kraus_family_Fst_def \<Psi>_def by (auto simp add: set_upt_Suc o_def intro!: sum.cong)
+    unfolding kf_Fst_def \<Psi>_def by (auto simp add: set_upt_Suc o_def intro!: sum.cong)
   finally show ?case unfolding \<EE>'_def by (auto simp add: comp_def)
 qed
 
@@ -368,19 +368,19 @@ using purification_run_mixed_B_count_prep[where n=d, OF assms] by auto
 
 
 
-text \<open>Purification of kraus_family_Fst\<close>
+text \<open>Purification of kf_Fst\<close>
 
 
-lemma purification_kraus_family_Fst:
+lemma purification_kf_Fst:
 assumes "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (F i) \<noteq> {}"
-assumes "x \<in> purify_comp_kraus n (\<lambda>n. kraus_family_Fst (F n)::(('a \<times> 'c) ell2, ('b \<times> 'c) ell2, unit) kraus_family)"
+assumes "x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n)::(('a \<times> 'c) ell2, ('b \<times> 'c) ell2, unit) kraus_family)"
 shows "\<exists>UA. x = (\<lambda>a. if a<n+1 then (Fst (UA a)::('a \<times> 'c) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('b \<times> 'c) ell2) else undefined)"
 proof -
   have nonempty: "PiE {0..<n+1} (\<lambda>i. Fst ` fst ` Rep_kraus_family (F i)
     ::(('a \<times> 'c) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('b \<times> 'c) ell2) set) \<noteq> {}"
     by (rule ccontr) (use assms in \<open>auto simp add: PiE_eq_empty_iff\<close>)
   have "x\<in> PiE {0..<n+1} (\<lambda>i. Fst ` fst ` Rep_kraus_family (F i))"
-    using assms unfolding purify_comp_kraus_def fst_Rep_kraus_family_Fst by auto
+    using assms unfolding purify_comp_kraus_def fst_Rep_kf_Fst by auto
   then have elem: "x a \<in> (\<lambda>f. f a) ` PiE {0..<n+1} (\<lambda>i. Fst ` fst ` Rep_kraus_family (F i))"
     for a by blast
   have rew: "(\<lambda>f. f a) ` PiE {0..<n+1} (\<lambda>i. Fst ` fst ` Rep_kraus_family (F i)::
