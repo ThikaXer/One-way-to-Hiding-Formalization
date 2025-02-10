@@ -19,7 +19,7 @@ original Kraus map.\<close>
 lift_definition kf_elems :: 
 "('a::chilbert_space, 'b::chilbert_space, unit) kraus_family \<Rightarrow> ('a, 'b, unit) kraus_family set" is 
 "\<lambda>E. (\<lambda>x. {x}) ` E"
-by (auto simp add: kf_finite)
+by (auto simp add: kraus_family_if_finite)
 
 lemma kf_elems_Rep_kraus_family:
 "kf_elems \<EE> = (\<lambda>x. Abs_kraus_family {x}) ` Rep_kraus_family \<EE>"
@@ -37,7 +37,7 @@ proof -
   have subset: "Rep_kraus_family F \<subseteq> Rep_kraus_family E" using assms by transfer auto
   have "kf_bound F = (\<Sum>(E, u)\<in>Rep_kraus_family F. E* o\<^sub>C\<^sub>L E)"
     using assms kf_bound_finite kf_elems_finite by blast
-  also have "\<dots> \<le> kf_bound E" using kf_sums_bounded_by_bound[OF subset] by auto
+  also have "\<dots> \<le> kf_bound E" using kf_bound_geq_sum[OF subset] by auto
   finally show ?thesis by linarith
 qed
 
@@ -49,34 +49,34 @@ using assms by transfer auto
 lemma inj_on_kf_singleton:
 "inj_on (\<lambda>x. Abs_kraus_family {x}) (Rep_kraus_family \<EE>)" 
 by (metis (no_types, lifting) Abs_kraus_family_inverse finite.intros(1) finite.intros(2) 
-    inj_on_def kf_finite mem_Collect_eq the_elem_eq)
+    inj_on_def kraus_family_if_finite mem_Collect_eq the_elem_eq)
 
 lemma kf_apply_singleton:
 "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) \<circ> (\<lambda>E. Abs_kraus_family {E::'a::chilbert_space \<Rightarrow>\<^sub>C\<^sub>L 'b::chilbert_space \<times> unit}) = 
  (\<lambda>(E, _). sandwich_tc E \<rho>)"
 proof -
   have *: "eq_onp (\<lambda>x. x \<in> Collect kraus_family) {E} {E}" for E :: "'a \<Rightarrow>\<^sub>C\<^sub>L 'b \<times> unit" 
-    by (simp add: eq_onp_same_args kf_finite)
+    by (simp add: eq_onp_same_args kraus_family_if_finite)
   then show ?thesis by (auto simp add: o_def kf_apply.abs_eq[OF *])
 qed
 
 lemma kf_apply_singleton':
 "kf_apply (Abs_kraus_family {x}) \<rho> = sandwich_tc (fst x) \<rho>"
-by (simp add: Abs_kraus_family_inverse kf_finite kf_apply.rep_eq)
+by (simp add: Abs_kraus_family_inverse kraus_family_if_finite kf_apply.rep_eq)
 
 lemma kf_apply_summable_on_kf_elems:
 fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
 shows "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) summable_on (kf_elems \<EE>)"
 unfolding  kf_elems_Rep_kraus_family 
 by (subst summable_on_reindex[OF inj_on_kf_singleton], subst kf_apply_singleton, 
-    rule kf_map_summable)
+    rule kf_apply_summable)
 
 lemma kf_apply_has_sum_kf_elems:
 fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
 shows "((\<lambda>\<FF>. kf_apply \<FF> \<rho>) has_sum (kf_apply \<EE> \<rho>)) (kf_elems \<EE>)"
 unfolding  kf_elems_Rep_kraus_family 
 by (subst has_sum_reindex[OF inj_on_kf_singleton], subst kf_apply_singleton, 
-    simp add: kf_map_has_sum)
+    simp add: kf_apply_has_sum)
 
 lemma kf_apply_abs_summable_on_kf_elems:
 fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
@@ -84,7 +84,7 @@ shows "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) abs_summable_on (kf_elems \<EE>)"
 unfolding kf_elems_Rep_kraus_family
 apply (subst abs_summable_on_reindex[OF inj_on_kf_singleton], 
        subst kf_apply_singleton)
-using Rep_kraus_family kf_map_abs_summable by blast
+using Rep_kraus_family kf_apply_abs_summable by blast
 
 
 
@@ -147,7 +147,7 @@ proof -
   let ?f2 = "(\<lambda>x. \<bar>\<Sum>\<^sub>\<infinity>y\<in>finite_kraus_subadv \<EE> n. norm (kf_apply (Abs_kraus_family {x}) (\<rho>n y))\<bar>)"
 
   have "(\<lambda>(E, x). sandwich_tc E \<rho>) abs_summable_on Rep_kraus_family (\<EE> (Suc n))"
-    using Rep_kraus_family kf_map_abs_summable by blast
+    using Rep_kraus_family kf_apply_abs_summable by blast
   then have f1_summable: "?f1 summable_on Rep_kraus_family (\<EE> (Suc n))" 
     unfolding sandwich_tc_lim \<rho>_def[symmetric] using trace_tc_abs_summable_on o_def
     by (metis (mono_tags, lifting) abs_summable_summable norm_abs split_def summable_on_cong)  

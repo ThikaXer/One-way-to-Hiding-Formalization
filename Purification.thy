@@ -80,7 +80,7 @@ assumes "U \<in> fst ` Rep_kraus_family \<EE>"
 shows "U* o\<^sub>C\<^sub>L U \<le> id_cblinfun"
 proof -
   have *: "{(U, ())} \<subseteq> Rep_kraus_family \<EE>" using assms(2) by auto
-  show ?thesis using kf_sums_bounded_by_bound[OF *] assms(1) by auto
+  show ?thesis using kf_bound_geq_sum[OF *] assms(1) by auto
 qed
 
 lemma norm_in_kraus_map:

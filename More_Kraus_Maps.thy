@@ -156,7 +156,7 @@ proof -
     (\<Sum>\<^sub>\<infinity>E\<in>Rep_kraus_family (kf_Fst F). sandwich_tc (fst E) \<rho>)"
     using isCont_sandwich_tc by auto
   have 3: " (\<lambda>E. sandwich_tc (fst E) \<rho>) summable_on Rep_kraus_family (kf_Fst F)"
-    by (metis (no_types, lifting) cond_case_prod_eta fst_conv kf_map_summable)
+    by (metis (no_types, lifting) cond_case_prod_eta fst_conv kf_apply_summable)
   then show ?thesis unfolding kf_apply.rep_eq
     by (subst infsum_comm_additive_general[OF 1 2 3, symmetric]) 
        (auto intro!: infsum_cong simp add: sand)
@@ -178,7 +178,7 @@ proof -
   have [simp]: \<open>bounded_linear (tc_tensor (sandwich_tc E \<rho>))\<close> for E
     by (intro bounded_linear_intros)
   have sum2: \<open>(\<lambda>(E, x). sandwich_tc E \<rho>) summable_on Rep_kraus_family \<EE>\<close>
-    using kf_map_summable by blast
+    using kf_apply_summable by blast
 
   have \<open>kf_apply (kf_Fst \<EE> ::(('c \<times> 'b) ell2, ('a \<times> 'b) ell2, unit) kraus_family) 
     (tc_tensor \<rho> \<sigma>)
