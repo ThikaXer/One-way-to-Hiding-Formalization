@@ -702,7 +702,7 @@ text \<open>The general version of the O2H with terminating adversary. This form
 Theorem 1.\<close>
 
 theorem mixed_o2h_term:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  4 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
 and 
@@ -771,7 +771,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_2:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -842,7 +842,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_3:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -899,7 +899,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_4:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -985,7 +985,7 @@ proof -
 qed
 
 theorem mixed_o2h_term_5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -1044,7 +1044,7 @@ qed
 
 
 lemma Pright_G_H_case5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows "mixed_H.Pright Proj_5 = mixed_G.Pright Proj_5"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -1084,7 +1084,7 @@ qed
 
 
 theorem mixed_o2h_term_6:
-assumes "\<And>i. i<d+1 \<Longrightarrow> trace_preserving_map (kf_apply (E i))"
+assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
 shows 
 "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"

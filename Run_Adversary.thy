@@ -106,7 +106,7 @@ using n proof (induct n)
   have "norm (run_mixed_adv 0 Es UB init' X' Y' H) \<le> kf_norm (Es 0)" 
     using kf_apply_bounded_pos[OF init0] norm1 by auto
   also have "\<dots> \<le> 1" unfolding kf_norm_def using Es_norm_id[of 0]
-    by (metis Suc_eq_plus1 kf_bound_pos norm_cblinfun_id norm_cblinfun_mono zero_less_Suc)
+    by (metis "0.prems" Kraus_Families.kf_bound_pos norm_cblinfun_id norm_cblinfun_mono)
   finally show ?case by auto
 next
   case (Suc n)
@@ -118,8 +118,8 @@ next
     kf_norm (Es (Suc n)) *  norm (?sand (run_mixed_adv n Es UB init' X' Y' H))"
     using kf_apply_bounded_pos[OF pos] by auto
   also have "\<dots> \<le> norm (?sand (run_mixed_adv n Es UB init' X' Y' H))"
-    unfolding kf_norm_def using Es_norm_id[OF Suc(2)] by (metis kf_bound_pos 
-    mult_left_le_one_le norm_cblinfun_id norm_cblinfun_mono norm_ge_zero)
+    unfolding kf_norm_def using Es_norm_id[OF Suc(2)]
+    by (metis Kraus_Families.kf_bound_pos mult_left_le_one_le norm_cblinfun_id norm_cblinfun_mono norm_ge_zero)
   also have "\<dots> \<le> (norm ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n))^2" 
     using norm_sandwich_tc Suc by (smt (verit, best) Suc_lessD mult_less_cancel_left1 zero_le_power2)
   also have "\<dots> \<le> (norm ((X';Y') (Uquery H)))^2 * (norm (UB n))^2"
@@ -132,16 +132,14 @@ qed
 
 text \<open>Trace preserving Kraus maps/adversaries preserve the norm.\<close>
 
-lemma trace_preserving_map_kf_apply:
-assumes "trace_preserving_map (kf_apply F)" "\<rho> \<ge> 0"
+lemma km_trace_preserving_kf_apply:
+assumes "km_trace_preserving (kf_apply F)" "\<rho> \<ge> 0"
 shows "norm (kf_apply F \<rho>) = norm \<rho>"
-using assms unfolding trace_preserving_map_def
-by (simp add: kf_apply_pos norm_tc_pos_Re)
-
+  by (metis assms(1,2) kf_apply_pos km_trace_preserving_iff norm_tc_pos_Re)
 
 
 lemma (in o2h_setting) trace_preserving_norm_run_mixed_adv:
-assumes trace_pres: "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply (Es i))"
+assumes trace_pres: "\<And>i. i < d+1 \<Longrightarrow> km_trace_preserving (kf_apply (Es i))"
 and n: "n < d+1"
 and iso_UB: "\<And>i. i < d+1 \<Longrightarrow> isometry (UB i)" 
 and register: "register (X';Y')"
@@ -151,8 +149,8 @@ shows "norm (run_mixed_adv n Es UB init' X' Y' H) = 1"
 using n proof (induct n)
   case 0
   have "norm (kf_apply (Es 0) (tc_selfbutter init')) = norm (tc_selfbutter init')" 
-    by (intro trace_preserving_map_kf_apply) 
-       (auto simp add: tc_selfbutter_def assms(1)[OF 0])
+    using assms(1)
+    by (auto intro!: km_trace_preserving_kf_apply simp add: tc_selfbutter_def)
   then show ?case using assms by auto 
 next
   case (Suc n)
@@ -160,8 +158,8 @@ next
   have "norm (kf_apply (Es (Suc n))
        (sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n) (run_mixed_adv n Es UB init' X' Y' H))) =
     norm (sandwich_tc ((X';Y') (Uquery H) o\<^sub>C\<^sub>L UB n) (run_mixed_adv n Es UB init' X' Y' H))"
-    by (intro trace_preserving_map_kf_apply) 
-       (auto simp add: assms(1)[OF Suc(2)] run_mixed_adv_pos sandwich_tc_pos)
+    using assms(1)[OF Suc(2)]
+    by (auto intro!: km_trace_preserving_kf_apply simp add: tc_selfbutter_def  run_mixed_adv_pos sandwich_tc_pos)
   also have "\<dots> =  norm (run_mixed_adv n Es UB init' X' Y' H)" 
     by (intro norm_sandwich_tc_unitary) (use iso_UB[OF \<open>n<d+1\<close>] 
     unitary_isometry[OF register_unitary[OF register unitary_H]]
@@ -317,14 +315,13 @@ unfolding run_mixed_B_def  proof (intro norm_run_mixed_adv, goal_cases)
 qed (auto simp add: register_XY_for_B norm_init_B norm_US assms)
 
 lemma trace_preserving_norm_run_mixed_B:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+assumes "\<And>i. i < d+1 \<Longrightarrow> km_trace_preserving (kf_apply 
   (kf_Fst (F i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
 shows "norm (run_mixed_B F H S) = 1"
-unfolding run_mixed_B_def
-by (intro trace_preserving_norm_run_mixed_adv)
-   (auto simp add: assms isometry_US register_XY_for_B norm_init_B)
-
-
+  unfolding run_mixed_B_def
+  by (auto intro!: trace_preserving_norm_run_mixed_adv
+      simp add: assms isometry_US register_XY_for_B norm_init_B
+      simp del: km_trace_preserving_apply)
 
 
 section \<open>Definition of B_count\<close>
@@ -427,12 +424,12 @@ unfolding run_mixed_B_count_def  proof (intro norm_run_mixed_adv, goal_cases)
 qed (auto simp add: register_XY_for_C norm_init_B_count norm_U_S' assms)
 
 lemma trace_preserving_norm_run_mixed_B_count:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+assumes "\<And>i. i < d+1 \<Longrightarrow> km_trace_preserving (kf_apply 
   (kf_Fst (F i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
 shows "norm (run_mixed_B_count F H S) = 1"
-unfolding run_mixed_B_count_def
-by (intro trace_preserving_norm_run_mixed_adv)
-   (auto simp add: assms iso_U_S' register_XY_for_C norm_init_B_count)
+  by (auto intro!: trace_preserving_norm_run_mixed_adv
+      simp add: assms iso_U_S' register_XY_for_C norm_init_B_count run_mixed_B_count_def
+      simp del: km_trace_preserving_apply)
 
 
 end

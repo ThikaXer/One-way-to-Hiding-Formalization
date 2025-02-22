@@ -15,7 +15,6 @@ assumes "c\<noteq>0"
 shows "a \<otimes>\<^sub>o c = b \<otimes>\<^sub>o c \<Longrightarrow> a = b"
 using inj_tensor_left[OF assms] unfolding inj_def by auto
 
-
 lift_definition kf_Fst :: "('a ell2, 'c ell2, unit) kraus_family \<Rightarrow> 
   (('a \<times> 'b) ell2, ('c \<times> 'b) ell2, unit) kraus_family" is 
 "\<lambda>E. (\<lambda>(x,_). (x \<otimes>\<^sub>o id_cblinfun, ())) ` E"
@@ -214,29 +213,31 @@ proof (rule fun_cong[where x=\<rho>], rule eq_from_separatingI2[OF separating_se
   from assms
   show \<open>partial_trace (kf_apply (kf_Fst \<EE>) (tc_tensor \<rho> \<sigma>)) =
         kf_apply \<EE> (partial_trace (tc_tensor \<rho> \<sigma>))\<close>
-    by (auto simp: kf_apply_Fst_tensor partial_trace_tensor trace_preserving_map_def
-       kf_apply_scaleC)
+  by (simp add: kf_apply_Fst_tensor kf_apply_scaleC partial_trace_tensor)
 qed
 
 
 
 lemma trace_preserving_kf_Fst:
-assumes "trace_preserving_map (kf_apply E)"
-shows "trace_preserving_map (kf_apply (
+assumes "km_trace_preserving (kf_apply E)"
+shows "km_trace_preserving (kf_apply (
     kf_Fst E ::(('a \<times> 'c) ell2, ('a \<times> 'c) ell2, unit) kraus_family))"
 proof - 
   have bounded: "bounded_clinear (\<lambda>\<rho>. trace_tc (kf_apply (kf_Fst E) \<rho>))"
     by (simp add: bounded_clinear_compose kf_apply_bounded_clinear)
   have trace: "trace_tc (kf_apply (kf_Fst E :: 
     (('a \<times> 'c) ell2, ('a \<times> 'c) ell2, unit) kraus_family) (tc_tensor x y)) =
-    trace_tc (tc_tensor x y)" for x y using assms unfolding trace_preserving_map_def 
-    by (simp add: kf_apply_Fst_tensor tc_tensor.rep_eq trace_tc.rep_eq trace_tensor) 
+    trace_tc (tc_tensor x y)" for x y using assms
+    apply (simp add: kf_apply_Fst_tensor tc_tensor.rep_eq trace_tc.rep_eq trace_tensor km_trace_preserving_def) 
+    by (metis kf_trace_preserving_def trace_tc.rep_eq)
+
   have "(\<lambda>\<rho>. trace_tc (kf_apply (kf_Fst E :: 
     (('a \<times> 'c) ell2, ('a \<times> 'c) ell2, unit) kraus_family) \<rho>)) = trace_tc"
     by (rule eq_from_separatingI2[OF separating_set_bounded_clinear_tc_tensor])
        (auto simp add: bounded trace)
-  then show ?thesis using assms unfolding trace_preserving_map_def
-    by (metis kf_apply_clinear)
+  then show ?thesis
+    using assms unfolding km_trace_preserving_def
+    by (metis kf_trace_preserving_def)
 qed
 
 

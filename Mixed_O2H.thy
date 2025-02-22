@@ -176,7 +176,7 @@ qed
 
 
 lemma trace_preserving_norm_\<rho>right:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+assumes "\<And>i. i < d+1 \<Longrightarrow> km_trace_preserving (kf_apply 
   (kf_Fst (E i)::(('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
 shows "norm (\<rho>right E) = 1"
 proof -
@@ -195,7 +195,7 @@ proof -
 qed
 
 lemma trace_preserving_norm_\<rho>count:
-assumes "\<And>i. i < d+1 \<Longrightarrow> trace_preserving_map (kf_apply 
+assumes "\<And>i. i < d+1 \<Longrightarrow> km_trace_preserving (kf_apply 
   (kf_Fst (E i)::(('mem \<times> nat) ell2, ('mem \<times> nat) ell2, unit) kraus_family))"
 shows "norm (\<rho>count E) = 1"
 proof -
