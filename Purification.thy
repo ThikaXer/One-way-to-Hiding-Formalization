@@ -26,7 +26,7 @@ definition comp_upto :: "(nat \<Rightarrow> ('a::chilbert_space) \<Rightarrow>\<
 text \<open>Some auxiliary lemmas on injectivity, Fst and finiteness.\<close>
 
 lemma Rep_kf_id:
-"Rep_kraus_family kf_id = {(id_cblinfun,())}"
+  "Rep_kraus_family kf_id = {(id_cblinfun :: 'a \<Rightarrow>\<^sub>C\<^sub>L 'a::{chilbert_space,not_singleton},())}"
   by (simp add: kf_id_def kf_of_op.rep_eq del: kf_of_op_id)
 
 lemma fst_Rep_kf_Fst:
@@ -55,7 +55,7 @@ using assms by transfer auto
 
 lemma finite_kf_id:
 "finite (Rep_kraus_family kf_id)"
-by (simp add: Rep_kf_id)
+  by (simp add: kf_of_op.rep_eq flip: kf_of_op_id)
 
 
 lemma inj_on_fst_Rep_kraus_family:
@@ -208,8 +208,10 @@ proof (induct d)
   let ?\<EE>0 = "kf_Fst (\<EE> 0)"
   have finite: "finite (Rep_kraus_family ?\<EE>0)" 
     using finite_kf_Fst assms(1)  by auto
-  have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)" using inj_on_fst_Rep_kraus_family by auto
-  have inj2: "inj_on Fst (fst ` Rep_kraus_family (\<EE> 0))" using inj_on_Fst by auto
+  have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)"
+    by (rule inj_on_fst_Rep_kraus_family)
+  have inj2: "inj_on Fst (fst ` Rep_kraus_family (\<EE> 0))"
+    using inj_on_Fst by auto
   have *: "kf_apply ?\<EE>0 (tc_selfbutter init_B) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family ?\<EE>0). sandwich_tc E (tc_selfbutter init_B))"
     unfolding kf_apply.rep_eq
@@ -287,7 +289,8 @@ proof (induct n)
   let ?\<EE>0 = "kf_Fst (\<EE> 0)"
   have finite: "finite (Rep_kraus_family ?\<EE>0)" 
     using finite_kf_Fst assms by auto
-  have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)" using inj_on_fst_Rep_kraus_family by auto
+  have inj1: "inj_on fst (Rep_kraus_family ?\<EE>0)"
+    by (rule inj_on_fst_Rep_kraus_family)
   have inj2: "inj_on Fst (fst ` Rep_kraus_family (\<EE> 0))" using inj_on_Fst by auto
   have *: "kf_apply ?\<EE>0 (tc_selfbutter init_B_count) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family ?\<EE>0). sandwich_tc E (tc_selfbutter init_B_count))"

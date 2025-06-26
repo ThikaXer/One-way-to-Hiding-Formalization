@@ -51,11 +51,25 @@ proof (rename_tac \<EE>, intro CollectI)
     qed
     then show \<open>bdd_above ((\<lambda>F. \<Sum>(E, x)\<in>F. E* o\<^sub>C\<^sub>L E) ` {F. finite F \<and> F \<subseteq> Fst})\<close> 
       by fast
+    show \<open>0 \<notin> fst ` Fst\<close>  (is \<open>?zero \<notin> _\<close>)
+    proof (rule notI)
+      assume \<open>?zero \<in> fst ` Fst\<close>
+      then have \<open>?zero \<in> (\<lambda>x. fst x \<otimes>\<^sub>o id_cblinfun) ` \<EE>\<close>
+        by (simp add: Fst_def f_def image_image case_prod_unfold)
+      then obtain E where \<open>E \<in> \<EE>\<close> and \<open>?zero = fst E \<otimes>\<^sub>o id_cblinfun\<close>
+        by blast
+      then have \<open>fst E = 0\<close>
+        by (metis id_cblinfun_not_0 tensor_op_nonzero)
+      with \<open>E \<in> \<EE>\<close>
+      show False
+        using \<open>kraus_family \<EE>\<close>
+        by (simp add: kraus_family_def)
+    qed
   qed
 qed
 
 
-
+(* TODO remove *)
 lemma summable_on_in_kf_Fst:
 fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
 and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
@@ -76,6 +90,7 @@ proof -
   show ?thesis by (auto intro!: summable_wot_boundedI[OF bound pos]) 
 qed
 
+(* TODO remove *)
 lemma infsum_in_kf_Fst:
 fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
 and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
@@ -108,8 +123,6 @@ proof -
   then show ?thesis unfolding s_def by auto
 qed
 
-
-
 lemma kf_bound_kf_Fst:
 "kf_bound (kf_Fst F:: (('a \<times> 'b) ell2, ('c \<times> 'b) ell2, unit) kraus_family) \<le> 
   kf_bound F \<otimes>\<^sub>o id_cblinfun"
@@ -130,8 +143,6 @@ proof -
   then show ?thesis 
     by (simp add: kf_Fst.rep_eq kf_bound.rep_eq)
 qed
-
-
 
 lemma sandwich_tc_kf_apply_Fst:
 "sandwich_tc (Snd (Q::'d update)) (kf_apply (kf_Fst F:: 
@@ -161,14 +172,12 @@ proof -
        (auto intro!: infsum_cong simp add: sand)
 qed
 
-
-
 text \<open>kraus family Fst is trace preserving.\<close>
 
 
 lemma kf_apply_Fst_tensor:
 \<open>kf_apply (kf_Fst \<EE> ::(('c \<times> 'b) ell2, ('a \<times> 'b) ell2, unit) kraus_family) 
-  (tc_tensor \<rho> \<sigma>)= tc_tensor (kf_apply \<EE> \<rho>) \<sigma>\<close>
+  (tc_tensor \<rho> \<sigma>) = tc_tensor (kf_apply \<EE> \<rho>) \<sigma>\<close>
 proof -
   have inj: \<open>inj_on (\<lambda>(E, x). (E \<otimes>\<^sub>o id_cblinfun, ())) (Rep_kraus_family \<EE>)\<close>
     unfolding inj_on_def by (auto simp add: inj_Fst_alt[OF id_cblinfun_not_0])
@@ -197,11 +206,8 @@ proof -
   finally show ?thesis by auto
 qed
 
-
-
-
 lemma partial_trace_ignore_trace_preserving_map_Fst:
-  assumes \<open>trace_preserving_map (kf_apply \<EE>)\<close>
+  assumes \<open>kf_trace_preserving \<EE>\<close>
   shows \<open>partial_trace (kf_apply (kf_Fst \<EE>) \<rho>) = 
          kf_apply \<EE> (partial_trace \<rho>)\<close>
 proof (rule fun_cong[where x=\<rho>], rule eq_from_separatingI2[OF separating_set_bounded_clinear_tc_tensor])
@@ -215,8 +221,6 @@ proof (rule fun_cong[where x=\<rho>], rule eq_from_separatingI2[OF separating_se
         kf_apply \<EE> (partial_trace (tc_tensor \<rho> \<sigma>))\<close>
   by (simp add: kf_apply_Fst_tensor kf_apply_scaleC partial_trace_tensor)
 qed
-
-
 
 lemma trace_preserving_kf_Fst:
 assumes "km_trace_preserving (kf_apply E)"

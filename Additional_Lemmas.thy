@@ -372,6 +372,9 @@ qed
 lemma clinear_of_complex[iff]: \<open>clinear of_complex\<close>
   by (simp add: clinearI)
 
+lemma inj_on_CARD_1[iff]: \<open>inj_on f X\<close> for X :: \<open>'a::CARD_1 set\<close>
+  by (auto intro!: inj_onI)
+
 unbundle no cblinfun_syntax
 unbundle no lattice_syntax
 

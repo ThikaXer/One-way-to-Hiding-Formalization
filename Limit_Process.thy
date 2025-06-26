@@ -19,7 +19,8 @@ original Kraus map.\<close>
 lift_definition kf_elems :: 
 "('a::chilbert_space, 'b::chilbert_space, unit) kraus_family \<Rightarrow> ('a, 'b, unit) kraus_family set" is 
 "\<lambda>E. (\<lambda>x. {x}) ` E"
-by (auto simp add: kraus_family_if_finite)
+  apply (intro CollectI kraus_family_if_finite)
+  by (auto simp: kraus_family_def)
 
 lemma kf_elems_Rep_kraus_family:
 "kf_elems \<EE> = (\<lambda>x. Abs_kraus_family {x}) ` Rep_kraus_family \<EE>"
@@ -47,46 +48,79 @@ shows "card (Rep_kraus_family F) = 1"
 using assms by transfer auto
 
 lemma inj_on_kf_singleton:
-"inj_on (\<lambda>x. Abs_kraus_family {x}) (Rep_kraus_family \<EE>)" 
-by (metis (no_types, lifting) Abs_kraus_family_inverse finite.intros(1) finite.intros(2) 
-    inj_on_def kraus_family_if_finite mem_Collect_eq the_elem_eq)
+  "inj_on (\<lambda>x. Abs_kraus_family {x}) (Rep_kraus_family \<EE>)" 
+  apply (rule inj_onI)
+  apply (subst (asm) Abs_kraus_family_inject)
+  using Rep_kraus_family kraus_family_def by auto
 
 lemma kf_apply_singleton:
-"(\<lambda>\<FF>. kf_apply \<FF> \<rho>) \<circ> (\<lambda>E. Abs_kraus_family {E::'a::chilbert_space \<Rightarrow>\<^sub>C\<^sub>L 'b::chilbert_space \<times> unit}) = 
- (\<lambda>(E, _). sandwich_tc E \<rho>)"
-proof -
-  have *: "eq_onp (\<lambda>x. x \<in> Collect kraus_family) {E} {E}" for E :: "'a \<Rightarrow>\<^sub>C\<^sub>L 'b \<times> unit" 
-    by (simp add: eq_onp_same_args kraus_family_if_finite)
-  then show ?thesis by (auto simp add: o_def kf_apply.abs_eq[OF *])
-qed
-
-lemma kf_apply_singleton':
-"kf_apply (Abs_kraus_family {x}) \<rho> = sandwich_tc (fst x) \<rho>"
-by (simp add: Abs_kraus_family_inverse kraus_family_if_finite kf_apply.rep_eq)
+  fixes E :: \<open>'a::chilbert_space \<Rightarrow>\<^sub>C\<^sub>L 'b::chilbert_space \<times> 'x\<close>
+  assumes \<open>fst E \<noteq> 0\<close>
+  shows "kf_apply (Abs_kraus_family {E}) \<rho> = sandwich_tc (fst E) \<rho>"
+  apply (subst kf_apply.abs_eq)
+  using assms
+   apply (simp add: eq_onp_same_args kraus_family_if_finite)
+  by simp 
 
 lemma kf_apply_summable_on_kf_elems:
-fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
-shows "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) summable_on (kf_elems \<EE>)"
-unfolding  kf_elems_Rep_kraus_family 
-by (subst summable_on_reindex[OF inj_on_kf_singleton], subst kf_apply_singleton, 
-    rule kf_apply_summable)
+  fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
+  shows "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) summable_on (kf_elems \<EE>)"
+proof -
+  have *: \<open>kf_apply (Abs_kraus_family {E}) \<rho> = sandwich_tc (fst E) \<rho>\<close>
+    if \<open>E \<in> Rep_kraus_family \<EE>\<close> for E
+    apply (subst kf_apply_singleton)
+    using that Rep_kraus_family
+     apply (force intro!: simp: kraus_family_def)
+    by simp
+  show ?thesis
+    unfolding kf_elems_Rep_kraus_family 
+    apply (subst summable_on_reindex[OF inj_on_kf_singleton])
+    apply (rule summable_on_cong[where g=\<open>\<lambda>E. sandwich_tc (fst E) \<rho>\<close>, THEN iffD2])
+    using * 
+     apply force
+    using kf_apply_summable
+    by (force simp: case_prod_unfold)
+qed
 
 lemma kf_apply_has_sum_kf_elems:
 fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
 shows "((\<lambda>\<FF>. kf_apply \<FF> \<rho>) has_sum (kf_apply \<EE> \<rho>)) (kf_elems \<EE>)"
-unfolding  kf_elems_Rep_kraus_family 
-by (subst has_sum_reindex[OF inj_on_kf_singleton], subst kf_apply_singleton, 
-    simp add: kf_apply_has_sum)
+proof -
+  have *: \<open>kf_apply (Abs_kraus_family {E}) \<rho> = sandwich_tc (fst E) \<rho>\<close>
+    if \<open>E \<in> Rep_kraus_family \<EE>\<close> for E
+    apply (subst kf_apply_singleton)
+    using that Rep_kraus_family
+     apply (force intro!: simp: kraus_family_def)
+    by simp
+  show ?thesis
+    unfolding kf_elems_Rep_kraus_family 
+    apply (subst has_sum_reindex[OF inj_on_kf_singleton])
+    apply (rule has_sum_cong[where g=\<open>\<lambda>E. sandwich_tc (fst E) \<rho>\<close>, THEN iffD2])
+    using * 
+     apply force
+    by (metis (no_types, lifting) has_sum_cong kf_apply_has_sum split_def)
+qed
 
 lemma kf_apply_abs_summable_on_kf_elems:
 fixes \<EE> :: "('a::chilbert_space,'b::chilbert_space,unit) kraus_family"
 shows "(\<lambda>\<FF>. kf_apply \<FF> \<rho>) abs_summable_on (kf_elems \<EE>)"
-unfolding kf_elems_Rep_kraus_family
-apply (subst abs_summable_on_reindex[OF inj_on_kf_singleton], 
-       subst kf_apply_singleton)
-using Rep_kraus_family kf_apply_abs_summable by blast
-
-
+proof -
+  have *: \<open>kf_apply (Abs_kraus_family {E}) \<rho> = sandwich_tc (fst E) \<rho>\<close>
+    if \<open>E \<in> Rep_kraus_family \<EE>\<close> for E
+    apply (subst kf_apply_singleton)
+    using that Rep_kraus_family
+     apply (force intro!: simp: kraus_family_def)
+    by simp
+  show ?thesis
+    unfolding kf_elems_Rep_kraus_family 
+    apply (subst summable_on_reindex[OF inj_on_kf_singleton])
+    apply (subst o_def)
+    apply (rule summable_on_cong[where g=\<open>\<lambda>E. norm (sandwich_tc (fst E) \<rho>)\<close>, THEN iffD2])
+    using * 
+     apply force
+    using Rep_kraus_family kf_apply_abs_summable 
+    by (force simp: case_prod_unfold)
+qed
 
 text \<open>Now, we can define a sub-adversary. An adversary is modeled by a sequence of $n$ Kraus maps.
 A sub-adversary is then defined as a sequence of $n$ elements of the respective Kraus maps.
@@ -96,7 +130,7 @@ definition finite_kraus_subadv :: "'a kraus_adv \<Rightarrow> nat \<Rightarrow> 
 "finite_kraus_subadv \<EE> n =  PiE {0..<n+1} (\<lambda>i. kf_elems (\<EE> i))"
 
 lemma finite_kraus_subadv_I:
-assumes "f \<in> finite_kraus_subadv \<EE> n" "i<n+1"
+  assumes "f \<in> finite_kraus_subadv \<EE> n" "i<n+1"
 shows "f i \<in> kf_elems (\<EE> i)"
 using assms unfolding finite_kraus_subadv_def by auto
 
@@ -122,9 +156,13 @@ qed
 
 
 lemma norm_kf_apply_singleton_trace_tc:
-assumes "0 \<le> \<rho>"
+assumes "0 \<le> \<rho>" and \<open>fst x \<noteq> 0\<close>
 shows "norm (kf_apply (Abs_kraus_family {x}) \<rho>) = trace_tc (sandwich_tc (fst x) \<rho>)"
-by (subst norm_tc_pos, intro kf_apply_pos[OF assms], subst kf_apply_singleton') auto
+  apply (subst norm_tc_pos)
+   apply (rule kf_apply_pos[OF assms(1)])
+  using kf_apply_singleton
+  apply (subst kf_apply_singleton)
+  using assms by auto
  
 
 lemma infsum_norm_kf_apply_step:
@@ -156,11 +194,15 @@ proof -
     have "(?f1 summable_on Rep_kraus_family (\<EE> (Suc n))) = (?f2 summable_on Rep_kraus_family (\<EE> (Suc n)))"
     proof (subst summable_on_cong[of "Rep_kraus_family (\<EE> (Suc n))" ?f1 ?f2], goal_cases)
       case (1 x)
+      then have neq0: \<open>fst x \<noteq> 0\<close>
+        using Rep_kraus_family
+        by (force simp: kraus_family_def)
       have infsum: "(\<Sum>\<^sub>\<infinity>y\<in>finite_kraus_subadv \<EE> n. trace_tc (sandwich_tc (fst x) (\<rho>n y))) = 
         (\<Sum>\<^sub>\<infinity>y\<in>finite_kraus_subadv \<EE> n. norm (kf_apply (Abs_kraus_family {x}) (\<rho>n y)))"
-      by (subst infsum_of_real[symmetric], intro infsum_cong, 
-          subst norm_kf_apply_singleton_trace_tc)
-         (use pos in \<open>auto\<close>)
+        apply (subst infsum_of_real[symmetric])
+        apply (rule infsum_cong)
+        apply (subst norm_kf_apply_singleton_trace_tc)
+        using pos neq0 by auto
       then show ?case by (auto simp add: split_def abs_complex_def)
     next
       case 2
@@ -362,10 +404,8 @@ unfolding run_mixed_B_count_def by (rule run_mixed_adv_has_sum)
 
 lemma kf_elems_kf_Fst:
 "kf_elems (kf_Fst \<EE>) = (\<lambda>f. kf_Fst f) ` kf_elems \<EE>"
-by transfer auto
-
-
-
+ by transfer auto
+ 
 lemma finite_kraus_subadv_Fst_invert:
 "finite_kraus_subadv (\<lambda>m.  (kf_Fst :: _\<Rightarrow>(('a \<times> 'c) ell2,_,_) kraus_family) (\<EE> m)) n =  
  (\<lambda>f. \<lambda>i\<in>{0..<n+1}. kf_Fst (f i)) ` (finite_kraus_subadv \<EE> n)"
@@ -432,41 +472,40 @@ next
   finally show ?case by blast
 qed
 
+lemma inj_kf_Fst: \<open>E = F\<close> if \<open>kf_Fst E = kf_Fst F\<close>
+proof (insert that, transfer)
+  fix E F :: \<open>('a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'c ell2 \<times> unit) set\<close>
+  assume asm: \<open>(\<lambda>(x, _). (x \<otimes>\<^sub>o id_cblinfun, ())) ` E = (\<lambda>(x, _). (x \<otimes>\<^sub>o id_cblinfun, ())) ` F\<close>
+  have \<open>inj (\<lambda>(x::'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'c ell2, _::unit). (x \<otimes>\<^sub>o id_cblinfun, ()))\<close>
+    apply (rewrite at \<open>inj \<hole>\<close> to \<open>map_prod (\<lambda>x. x \<otimes>\<^sub>o id_cblinfun) id\<close> DEADID.rel_mono_strong)
+     apply (auto intro!: simp: )[1]
+    apply (rule prod.inj_map)
+    by (simp_all add: inj_tensor_left) 
+  from inj_image_eq_iff[OF this] asm
+  show \<open>E = F\<close>
+    by blast
+qed
 
 
 lemma inj_on_kf_Fst:
 "inj_on (\<lambda>f. \<lambda>n\<in>{0..<n+1}. (kf_Fst (f n) :: (('a \<times> 'b) ell2, _, _) kraus_family)) 
   (finite_kraus_subadv \<EE> n)"
-unfolding inj_on_def proof (safe, goal_cases)
-  case (1 x y)
-  have eq: "(kf_Fst (x i) :: (('a \<times> 'b) ell2, ('a \<times> 'b) ell2, _) kraus_family) = kf_Fst (y i)"
-    if "i<Suc n" for i using fun_cong[of _ _ i, OF 1(3)] that by auto
-  have "x i = y i" if "i<Suc n" for i using eq[OF that] proof (transfer, safe, goal_cases)
-    case (1 x i y a)
-    have "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) \<in> (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) ` x i" 
-      using 1(5) by force
-    then have "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) \<in> (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) ` y i" 
-      using 1(3) by metis
-    then obtain b where b: "(b,())\<in>y i" 
-      and same: "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) = (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) (b,())"
-      by force
-    then have "a = b" using inj_Fst_alt[OF id_cblinfun_not_0] by auto
-    then show ?case using b by auto
-  next
-    case (2 x i y a)
-    have "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) \<in> (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) ` y i" 
-      using 2(5) by force
-    then have "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) \<in> (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) ` x i" 
-      using 2(3) by metis
-    then obtain b where b: "(b,())\<in>x i" 
-      and same: "(a \<otimes>\<^sub>o (id_cblinfun ::'b update), ()) = (\<lambda>(x, y). (x \<otimes>\<^sub>o id_cblinfun, y)) (b,())"
-      by force
-    then have "a = b" using inj_Fst_alt[OF id_cblinfun_not_0] by auto
-    then show ?case using b by auto
-  qed
-  moreover have "x i = y i" if "i\<ge>Suc n" for i using 1(1,2)
-    by (metis PiE_arb Suc_eq_plus1 atLeastLessThan_iff finite_kraus_subadv_def not_le that)
-  ultimately show ?case using leI by blast
+proof (rule inj_onI, rename_tac E F)
+  fix E F :: \<open>nat \<Rightarrow> ('a ell2, 'a ell2, unit) kraus_family\<close>
+  assume finE: \<open>E \<in> finite_kraus_subadv \<EE> n\<close> and finF: \<open>F \<in> finite_kraus_subadv \<EE> n\<close>
+  assume eq: \<open>(\<lambda>i\<in>{0..<n + 1}. kf_Fst (E i)  :: (('a \<times> 'b) ell2, _, _) kraus_family) = (\<lambda>n\<in>{0..<n + 1}. kf_Fst (F n))\<close>
+  have \<open>(kf_Fst (E i) :: (('a \<times> 'b) ell2, _, _) kraus_family) = kf_Fst (F i)\<close> if \<open>i \<in> {0..<n+1}\<close> for i
+    using eq[unfolded fun_eq_iff, rule_format, of i]
+    unfolding restrict_def
+    using that by (auto intro!: simp: fun_eq_iff)
+  then have \<open>E i = F i\<close> if \<open>i \<in> {0..<n+1}\<close> for i
+    using inj_kf_Fst that by blast
+  moreover from finE finF
+  have \<open>E i = F i\<close> if \<open>i \<notin> {0..<n+1}\<close> for i
+    using that
+    by (simp add: finite_kraus_subadv_def PiE_def extensional_def)
+  ultimately  show \<open>E = F\<close>
+    by blast
 qed
 
 
