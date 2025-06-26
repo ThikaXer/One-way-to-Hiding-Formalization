@@ -376,7 +376,7 @@ lemma abs_op_id_cblinfun [simp]:
   "abs_op id_cblinfun = id_cblinfun"
   by (simp add: abs_op_id_on_pos)
 
-section \<open>empty_tc it the trace-class representative of the $0$.\<close>
+section \<open>\<^term>\<open>empty_tc\<close> is the trace-class representative of the $0$.\<close>
 
 definition empty_tc :: "'l tc_op" where 
   "empty_tc = Abs_trace_class (selfbutter (ket empty))"
@@ -594,7 +594,7 @@ lemma Pfind_Pright:
   unfolding Pfind_altdef by auto
 
 
-text \<open>Write mixed in pure states, pure in updates and connect updates to pure_o2h version.\<close>
+text \<open>Write mixed in pure states, pure in updates and connect updates to \<^locale>\<open>pure_o2h\<close> version.\<close>
 
 
 lemma Re_Pfind_update_altdef:
@@ -684,7 +684,7 @@ lemma Re_Pfind:
 
 
 
-text \<open>Pfind has_sum and summable properties\<close>
+text \<open>\<^const>\<open>Pfind\<close>, \<^const>\<open>has_sum\<close>, and \<^const>\<open>summable_on\<close> properties\<close>
 
 lemma Pfind_abs_summable_on:
   "Pfind abs_summable_on (finite_kraus_subadv E d)"
@@ -729,7 +729,7 @@ qed
 
 subsection \<open>Nontermination Part\<close>
 
-text \<open>This introduces the non-termination part needed for pure o2h with \<open>norm UA \<le> 1\<close>.\<close>
+text \<open>This introduces the non-termination part needed for pure o2h with \<^term>\<open>norm UA \<le> 1\<close>.\<close>
 
 
 definition P_nonterm_update::"('x \<Rightarrow> 'y) \<Rightarrow> ('x \<Rightarrow> bool) \<Rightarrow> (nat \<Rightarrow> 'mem update) \<Rightarrow> real" where
@@ -743,7 +743,7 @@ definition P_nonterm :: "'mem kraus_adv \<Rightarrow> real" where
   "P_nonterm F = Re (trace_tc (\<rho>count F) - trace_tc (\<rho>right F))"
 
 
-text \<open>Connecting mixed with pure, pure with updates and updates with pure_o2h version.\<close>
+text \<open>Connecting mixed with pure, pure with updates and updates with \<^locale>\<open>pure_o2h\<close> version.\<close>
 
 lemma P_nonterm_update_altdef:
   assumes "\<And>i. i<d+1 \<Longrightarrow> norm (UA i) \<le> 1"

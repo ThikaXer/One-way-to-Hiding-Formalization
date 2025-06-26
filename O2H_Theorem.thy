@@ -138,7 +138,7 @@ interpretation mixed_G: mixed_o2h X Y d init flip bit valid empty carrier_G dist
 
 
 
-text \<open>Lemmas on Proj_ket_upto and run_adv_mixed. The adversary run upto i can be projected 
+text \<open>Lemmas on \<^const>\<open>Proj_ket_upto\<close> and \<open>run_adv_mixed\<close>. The adversary run upto i can be projected 
   to the first i ket states in the counting register.\<close>
 
 
@@ -929,8 +929,8 @@ text \<open>Theorem 1: the definition of Pright (5) is
 
 Careful: In general, we cannot state quantum events with and or or. However, in the case that the 
 two projectors commute, we may say
-Pr(A \<and> B) \<equiv> PM_A o PM_B
-Pr(A \<or> B) \<equiv> PM_A + PM_B - PM_A o PM_B
+\<open>Pr(A \<and> B) \<equiv> PM_A o PM_B\<close>
+\<open>Pr(A \<or> B) \<equiv> PM_A + PM_B - PM_A o PM_B\<close>
 
 Still, for the projection, we need to joint the two projective spaces.
 \<close>

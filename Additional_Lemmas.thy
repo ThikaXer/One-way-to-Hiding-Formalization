@@ -83,7 +83,7 @@ lemma norm_sandwich_tc_unitary:
 
 
 
-text \<open>Lemmas on trace_tc\<close>
+text \<open>Lemmas on \<^const>\<open>trace_tc\<close>\<close>
 
 lemma trace_tc_minus:
   "trace_tc (a-b) = trace_tc a - trace_tc b"
@@ -218,7 +218,7 @@ lemma sqrt_binom:
 
 
 
-text \<open>Lemmas on sandwich_tc\<close>
+text \<open>Lemmas on \<^const>\<open>sandwich_tc\<close>\<close>
 
 lemma sandwich_tc_compose':
   "sandwich_tc (A o\<^sub>C\<^sub>L B) \<rho> = sandwich_tc A (sandwich_tc B \<rho>)"

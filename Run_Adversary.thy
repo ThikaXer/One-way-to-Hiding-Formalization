@@ -324,7 +324,7 @@ lemma trace_preserving_norm_run_mixed_B:
       simp del: km_trace_preserving_apply)
 
 
-section \<open>Definition of B_count\<close>
+section \<open>Definition of \<^term>\<open>B_count\<close>\<close>
 
 
 subsection \<open>Defining the run of adversary $B$\<close>

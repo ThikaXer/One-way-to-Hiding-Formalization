@@ -371,7 +371,7 @@ lemma purification_run_mixed_B_count:
 
 
 
-text \<open>Purification of kf_Fst\<close>
+text \<open>Purification of \<^const>\<open>kf_Fst\<close>\<close>
 
 
 lemma purification_kf_Fst:
