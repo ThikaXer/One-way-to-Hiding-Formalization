@@ -13,15 +13,15 @@ section \<open>General O2H Setting and Theorem\<close>
 text \<open>General O2H setting\<close>
 
 locale o2h_theorem = o2h_setting "TYPE('x)" "TYPE('y::group_add)" "TYPE('mem)" "TYPE('l)" +
-fixes carrier :: "(('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> bool)\<times>_) set" 
-fixes distr :: "(('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> bool)\<times>_) \<Rightarrow> real"
+  fixes carrier :: "(('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> bool)\<times>_) set" 
+  fixes distr :: "(('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> 'y)\<times>('x \<Rightarrow> bool)\<times>_) \<Rightarrow> real"
 
 assumes distr_pos: "\<forall>(H,G,S,z)\<in>carrier. distr (H,G,S,z) \<ge> 0"
-    and distr_sum_1: "(\<Sum>(H,G,S,z)\<in>carrier. distr (H,G,S,z)) = 1"
-    and finite_carrier: "finite carrier" 
+  and distr_sum_1: "(\<Sum>(H,G,S,z)\<in>carrier. distr (H,G,S,z)) = 1"
+  and finite_carrier: "finite carrier" 
 
-    and H_G_same_upto_S: 
-        "\<And>H G S z. (H,G,S,z)\<in>carrier \<Longrightarrow> x \<in> - Collect S \<Longrightarrow> H x = G x"
+and H_G_same_upto_S: 
+"\<And>H G S z. (H,G,S,z)\<in>carrier \<Longrightarrow> x \<in> - Collect S \<Longrightarrow> H x = G x"
 
 fixes E:: "'mem kraus_adv"
 assumes E_norm_id: "\<And>i. i < d+1 \<Longrightarrow> kf_bound (E i) \<le> id_cblinfun"
@@ -33,15 +33,15 @@ assumes is_Proj_P: "is_Proj P"
 begin
 
 lemma Fst_E_nonzero:
-"\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (kf_Fst (E i)) \<noteq> {}"
-using E_nonzero by (simp add: kf_Fst.rep_eq)
+  "\<And>i. i < d+1 \<Longrightarrow> Rep_kraus_family (kf_Fst (E i)) \<noteq> {}"
+  using E_nonzero by (simp add: kf_Fst.rep_eq)
 
 text \<open>Some properties of the joint distribution.\<close>
 
 lemma Uquery_G_H_same_on_not_S_embed':
-assumes "(H,G,S,z)\<in>carrier"
-shows
-"Uquery H o\<^sub>C\<^sub>L proj_classical_set (- (Collect S)) \<otimes>\<^sub>o id_cblinfun = 
+  assumes "(H,G,S,z)\<in>carrier"
+  shows
+    "Uquery H o\<^sub>C\<^sub>L proj_classical_set (- (Collect S)) \<otimes>\<^sub>o id_cblinfun = 
  Uquery G o\<^sub>C\<^sub>L proj_classical_set (- (Collect S)) \<otimes>\<^sub>o id_cblinfun"
 proof (intro equal_ket, safe, unfold tensor_ell2_ket[symmetric], goal_cases)
   case (1 a b)
@@ -68,8 +68,8 @@ qed
 
 
 lemma Uquery_G_H_same_on_not_S_embed:
-assumes "(H,G,S,z)\<in>carrier"
-shows "((X;Y) (Uquery H) o\<^sub>C\<^sub>L (not_S_embed S)) = ((X;Y) (Uquery G) o\<^sub>C\<^sub>L (not_S_embed S))"
+  assumes "(H,G,S,z)\<in>carrier"
+  shows "((X;Y) (Uquery H) o\<^sub>C\<^sub>L (not_S_embed S)) = ((X;Y) (Uquery G) o\<^sub>C\<^sub>L (not_S_embed S))"
 proof -
   have "((X;Y) (Uquery H) o\<^sub>C\<^sub>L (not_S_embed S)) = 
     ((X;Y) (Uquery H) o\<^sub>C\<^sub>L (X;Y) (proj_classical_set (- (Collect S)) \<otimes>\<^sub>o id_cblinfun))"
@@ -86,11 +86,11 @@ proof -
 qed
 
 lemma Uquery_G_H_same_on_not_S_embed_tensor:
-assumes "(H,G,S,z)\<in>carrier"
-shows "((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L Fst (not_S_embed S)) = 
+  assumes "(H,G,S,z)\<in>carrier"
+  shows "((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L Fst (not_S_embed S)) = 
  ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L Fst (not_S_embed S))"
-using Uquery_G_H_same_on_not_S_embed[OF assms] unfolding UqueryH_tensor_id_cblinfunB Fst_def 
-by (auto simp add: comp_tensor_op)
+  using Uquery_G_H_same_on_not_S_embed[OF assms] unfolding UqueryH_tensor_id_cblinfunB Fst_def 
+  by (auto simp add: comp_tensor_op)
 
 
 
@@ -101,40 +101,40 @@ definition carrier_G where "carrier_G = (\<lambda>(H,G,S,z). (G,S,(H,z))) ` carr
 definition distr_G where "distr_G = (\<lambda>(G,S,(H,z)). distr (H,G,S,z))"
 
 lemma distr_G_pos: "\<forall>(G,S,z)\<in>carrier_G. distr_G (G,S,z) \<ge> 0"
-unfolding carrier_G_def distr_G_def using distr_pos by auto
+  unfolding carrier_G_def distr_G_def using distr_pos by auto
 
 lemma distr_G_sum_1: "(\<Sum>(G,S,z)\<in>carrier_G. distr_G (G,S,z)) = 1"
-unfolding carrier_G_def distr_G_def using distr_sum_1 
-by (subst sum.reindex, auto simp add: inj_on_def case_prod_beta)
+  unfolding carrier_G_def distr_G_def using distr_sum_1 
+  by (subst sum.reindex, auto simp add: inj_on_def case_prod_beta)
 
 lemma finite_carrier_G: "finite carrier_G" 
-unfolding carrier_G_def by (auto simp add: inj_on_def finite_carrier)
+  unfolding carrier_G_def by (auto simp add: inj_on_def finite_carrier)
 
 
 definition carrier_H where "carrier_H = (\<lambda>(H,G,S,z). (H,S,(G,z))) ` carrier"
 definition distr_H where "distr_H = (\<lambda>(H,S,(G,z)). distr (H,G,S,z))"
 
 lemma distr_H_pos: "\<forall>(H,S,z)\<in>carrier_H. distr_H (H,S,z) \<ge> 0"
-unfolding carrier_H_def distr_H_def using distr_pos by auto
+  unfolding carrier_H_def distr_H_def using distr_pos by auto
 
 lemma distr_H_sum_1: "(\<Sum>(H,S,z)\<in>carrier_H. distr_H (H,S,z)) = 1"
-unfolding carrier_H_def distr_H_def using distr_sum_1 
-by (subst sum.reindex[], auto simp add: inj_on_def case_prod_beta)
+  unfolding carrier_H_def distr_H_def using distr_sum_1 
+  by (subst sum.reindex[], auto simp add: inj_on_def case_prod_beta)
 
 lemma finite_carrier_H: "finite carrier_H" 
-unfolding carrier_H_def by (auto simp add: inj_on_def finite_carrier)
+  unfolding carrier_H_def by (auto simp add: inj_on_def finite_carrier)
 
 
 
 interpretation mixed_H: mixed_o2h X Y d init flip bit valid empty carrier_H distr_H E P
-apply unfold_locales
-using distr_H_pos distr_H_sum_1 finite_carrier_H E_norm_id E_nonzero is_Proj_P
-by auto
+  apply unfold_locales
+  using distr_H_pos distr_H_sum_1 finite_carrier_H E_norm_id E_nonzero is_Proj_P
+  by auto
 
 interpretation mixed_G: mixed_o2h X Y d init flip bit valid empty carrier_G distr_G E P
-apply unfold_locales
-using distr_G_pos distr_G_sum_1 finite_carrier_G E_norm_id E_nonzero is_Proj_P
-by auto
+  apply unfold_locales
+  using distr_G_pos distr_G_sum_1 finite_carrier_G E_norm_id E_nonzero is_Proj_P
+  by auto
 
 
 
@@ -143,14 +143,14 @@ text \<open>Lemmas on Proj_ket_upto and run_adv_mixed. The adversary run upto i 
 
 
 lemma length_has_bits_upto:
-assumes "l\<in>has_bits_upto n"
-shows "length l = d"
-using assms unfolding has_bits_upto_def len_d_lists_def has_bits_def by auto
+  assumes "l\<in>has_bits_upto n"
+  shows "length l = d"
+  using assms unfolding has_bits_upto_def len_d_lists_def has_bits_def by auto
 
 
 lemma empty_not_flip:
-assumes "x \<in> list_to_l ` has_bits_upto n" "n<d"
-shows "empty \<noteq> flip n x"    
+  assumes "x \<in> list_to_l ` has_bits_upto n" "n<d"
+  shows "empty \<noteq> flip n x"    
 proof -
   have "blog x" using assms using has_bits_upto_def surj_list_to_l by auto
   obtain l where x: "x = list_to_l l" and l_in:"l\<in>has_bits_upto n" using assms(1) by blast
@@ -162,8 +162,8 @@ proof -
 qed
 
 lemma empty_not_flip':
-assumes "x \<noteq> flip n empty" "n<d"
-shows "empty \<noteq> flip n x"    
+  assumes "x \<noteq> flip n empty" "n<d"
+  shows "empty \<noteq> flip n x"    
 proof (rule ccontr, safe)
   assume "empty = flip n x" 
   then have "flip n empty = flip n (flip n x)" by auto
@@ -173,18 +173,18 @@ qed
 
 
 lemma Proj_ket_upto_Snd:
-"Proj_ket_upto A = Snd (proj_classical_set (list_to_l ` A))"
-unfolding Proj_ket_upto_def Proj_ket_set_def Snd_def by auto
+  "Proj_ket_upto A = Snd (proj_classical_set (list_to_l ` A))"
+  unfolding Proj_ket_upto_def Proj_ket_set_def Snd_def by auto
 
 lemma from_trace_class_tc_selfbutter:
-"from_trace_class (tc_selfbutter x) = selfbutter x"
-by (simp add: tc_butterfly.rep_eq tc_selfbutter_def)
+  "from_trace_class (tc_selfbutter x) = selfbutter x"
+  by (simp add: tc_butterfly.rep_eq tc_selfbutter_def)
 
 
 
 lemma selfbutter_empty_US_Proj_ket_upto:
-assumes "i<d"
-shows "Snd (selfbutter (ket empty)) o\<^sub>C\<^sub>L ((US S i) o\<^sub>C\<^sub>L Proj_ket_upto (has_bits_upto i)) = 
+  assumes "i<d"
+  shows "Snd (selfbutter (ket empty)) o\<^sub>C\<^sub>L ((US S i) o\<^sub>C\<^sub>L Proj_ket_upto (has_bits_upto i)) = 
   Fst (not_S_embed S) o\<^sub>C\<^sub>L Snd (selfbutter (ket empty))"
 proof (intro equal_ket, safe, goal_cases)
   case (1 a b)
@@ -198,7 +198,7 @@ proof (intro equal_ket, safe, goal_cases)
       unfolding proj_classical_set_def by auto
     have "?left = (Snd (selfbutter (ket empty)) o\<^sub>C\<^sub>L (US S i)) *\<^sub>V ket (a, b)" 
       using proj by (auto simp add: Proj_ket_upto_def Proj_ket_set_def tensor_ell2_ket[symmetric] 
-      tensor_op_ell2)
+          tensor_op_ell2)
     also have "\<dots> = Snd (selfbutter (ket empty)) *\<^sub>V 
         ((S_embed S *\<^sub>V ket a) \<otimes>\<^sub>s (Ub i) *\<^sub>V ket b + ((not_S_embed S *\<^sub>V ket a) \<otimes>\<^sub>s ket b))" 
       using US_ket_split by auto
@@ -213,10 +213,10 @@ proof (intro equal_ket, safe, goal_cases)
       then have "flip i b \<noteq> empty" using assms bit_flip_same blog.intros(1) not_blog_flip by blast
       then have "Snd (selfbutter (ket empty)) *\<^sub>V ((S_embed S *\<^sub>V ket a) \<otimes>\<^sub>s (Ub i) *\<^sub>V ket b) = 0"
         by (simp add: Ub_def Snd_def classical_operator_ket[OF Ub_exists] tensor_op_ell2 
-        tensor_ell2_scaleC2)
+            tensor_ell2_scaleC2)
       then show ?thesis by (simp add: cblinfun.real.add_right)
     qed
-    (*Compatibility of X is assumed!*)
+      (*Compatibility of X is assumed!*)
     also have "\<dots> = ?right" unfolding Fst_def Snd_def
       by (auto simp add: tensor_ell2_ket[symmetric] cinner_ket tensor_op_ell2)
     finally show ?thesis by blast
@@ -229,7 +229,7 @@ proof (intro equal_ket, safe, goal_cases)
       unfolding proj_classical_set_def by (intro Proj_0_compl, intro mem_ortho_ccspanI) auto
     then have "?left = 0" 
       by (auto simp add: Proj_ket_upto_def Proj_ket_set_def tensor_ell2_ket[symmetric] 
-      tensor_op_ell2)
+          tensor_op_ell2)
     moreover have "?right = 0" using  \<open>b \<noteq> empty\<close> unfolding Fst_def Snd_def
       by (auto simp add: tensor_ell2_ket[symmetric] cinner_ket tensor_op_ell2)
     ultimately show ?thesis by auto
@@ -238,12 +238,12 @@ proof (intro equal_ket, safe, goal_cases)
   proof -
     have "b \<noteq> empty" using that blog.intros(1) by auto
     have "b \<notin> list_to_l ` has_bits_upto i"
-    using has_bits_upto_def surj_list_to_l that by fastforce
+      using has_bits_upto_def surj_list_to_l that by fastforce
     then have proj: "proj_classical_set (list_to_l ` has_bits_upto i) *\<^sub>V ket b = 0"
       unfolding proj_classical_set_def by (intro Proj_0_compl, intro mem_ortho_ccspanI) auto
     then have "?left = 0" 
       by (auto simp add: Proj_ket_upto_def Proj_ket_set_def tensor_ell2_ket[symmetric] 
-      tensor_op_ell2)
+          tensor_op_ell2)
     moreover have "?right = 0" using \<open>b \<noteq> empty\<close> unfolding Fst_def Snd_def
       by (auto simp add:  tensor_ell2_ket[symmetric] cinner_ket tensor_op_ell2)
     ultimately show ?thesis by auto
@@ -255,8 +255,8 @@ qed
 
 
 lemma list_to_l_has_bits_upto_flip:
-assumes "b \<in> list_to_l ` has_bits_upto n" "n<d"
-shows "flip n b \<in> list_to_l ` has_bits_upto (Suc n)"
+  assumes "b \<in> list_to_l ` has_bits_upto n" "n<d"
+  shows "flip n b \<in> list_to_l ` has_bits_upto (Suc n)"
 proof -
   obtain lb where lb: "lb \<in> has_bits_upto n" and b: "b = list_to_l lb" using assms by blast
   then have len:"length lb = d" unfolding has_bits_upto_def len_d_lists_def by auto
@@ -275,8 +275,8 @@ qed
 
 
 lemma Proj_ket_upto_US:
-assumes "n<d"
-shows "US S n o\<^sub>C\<^sub>L Proj_ket_upto (has_bits_upto n) = 
+  assumes "n<d"
+  shows "US S n o\<^sub>C\<^sub>L Proj_ket_upto (has_bits_upto n) = 
  Proj_ket_upto (has_bits_upto (Suc n)) o\<^sub>C\<^sub>L US S n o\<^sub>C\<^sub>L Proj_ket_upto (has_bits_upto n)"
 proof (intro equal_ket, safe, goal_cases)
   case (1 a b)
@@ -291,7 +291,7 @@ proof (intro equal_ket, safe, goal_cases)
       by (auto simp add: tensor_op_ell2 tensor_ell2_ket[symmetric])
     have proj_Suc: "proj_classical_set (list_to_l ` has_bits_upto (Suc n)) *\<^sub>V ket b = ket b"
       unfolding proj_classical_set_def by (metis has_bits_upto_incl image_mono le_simps(1) 
-        less_Suc_eq proj_classical_set_def proj_classical_set_elem subset_eq that)
+          less_Suc_eq proj_classical_set_def proj_classical_set_elem subset_eq that)
     have proj_Suc_flip: "proj_classical_set (list_to_l ` has_bits_upto (Suc n)) *\<^sub>V ket (flip n b) = 
         ket (flip n b)"
       using list_to_l_has_bits_upto_flip[OF that \<open>n<d\<close>] by (auto simp add: proj_classical_set_elem)
@@ -305,7 +305,7 @@ proof (intro equal_ket, safe, goal_cases)
     also have "\<dots> = (Proj_ket_upto (has_bits_upto (Suc n)) o\<^sub>C\<^sub>L US S n) *\<^sub>V ket (a,b)"
       unfolding Proj_ket_upto_Snd Snd_def US_def 
       by (auto simp add: tensor_op_ell2 cblinfun.add_right cblinfun.add_left tensor_ell2_ket[symmetric] 
-        Ub_ket)
+          Ub_ket)
     also have "\<dots> = ?right" using Proj by auto
     finally show ?thesis by blast
   qed
@@ -325,10 +325,10 @@ qed
 
 
 lemma run_pure_adv_projection:
-assumes "n<d+1" 
-and \<rho>: "\<rho> = run_pure_adv_tc n (\<lambda>m. if m<n+1 then Fst (UA m) else UB m) (US S) init_B X_for_B Y_for_B H"
-shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) \<rho> = \<rho>"
-using assms proof (induct n arbitrary: \<rho>)
+  assumes "n<d+1" 
+    and \<rho>: "\<rho> = run_pure_adv_tc n (\<lambda>m. if m<n+1 then Fst (UA m) else UB m) (US S) init_B X_for_B Y_for_B H"
+  shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) \<rho> = \<rho>"
+  using assms proof (induct n arbitrary: \<rho>)
   case 0
   let ?P = "proj_classical_set (list_to_l ` has_bits_upto 0)"
   have "sandwich (Snd ?P) (selfbutter init_B) = selfbutter init_B" 
@@ -338,13 +338,13 @@ using assms proof (induct n arbitrary: \<rho>)
     from_trace_class (tc_selfbutter init_B)"
     unfolding from_trace_class_sandwich_tc from_trace_class_tc_selfbutter by auto
   then have sand: "sandwich_tc (Snd ?P) (tc_selfbutter init_B) = tc_selfbutter init_B"
-     using from_trace_class_inject by blast
+    using from_trace_class_inject by blast
   have *: "(if (0::nat)<0+1 then Fst (UA 0) else UB 0) = Fst (UA 0)" by auto 
   have "sandwich_tc (Proj_ket_upto (has_bits_upto 0)) \<rho> =
     sandwich_tc (Fst (UA 0)) (sandwich_tc (Snd ?P) (tc_selfbutter init_B))" 
     unfolding Proj_ket_upto_Snd 0 run_pure_adv_tc.simps(1) unfolding *
     by (metis Fst_def Snd_def from_trace_class_inject from_trace_class_sandwich_tc id_cblinfun.rep_eq 
-      init_B_def from_trace_class_tc_selfbutter  selfbutter_sandwich tensor_op_ell2) 
+        init_B_def from_trace_class_tc_selfbutter  selfbutter_sandwich tensor_op_ell2) 
   also have "\<dots> = sandwich_tc (Fst (UA 0)) (tc_selfbutter init_B)"
     unfolding sand by auto
   finally show ?case unfolding 0(2) by auto
@@ -383,12 +383,12 @@ qed
 
 
 lemma run_mixed_adv_projection_finite:
-assumes "\<And>i. i < n + 1 \<Longrightarrow> finite (Rep_kraus_family (kf_Fst (F i)::
+  assumes "\<And>i. i < n + 1 \<Longrightarrow> finite (Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family))"
-and "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
+    and "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family) \<noteq> {}"
-assumes "n<d+1"
-shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
+  assumes "n<d+1"
+  shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
   (run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
   run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
 proof -
@@ -400,22 +400,22 @@ proof -
     have *: "(\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (F i) \<noteq> {})" 
       using assms(2) unfolding fst_Rep_kf_Fst by auto
     obtain UA where x:"x = (\<lambda>a. if a < n+1 then Fst (UA a) else undefined)" using 
-      purification_kf_Fst[OF * \<open>x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n))\<close>]
+        purification_kf_Fst[OF * \<open>x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n))\<close>]
       by auto
     show ?thesis using assms by (intro run_pure_adv_projection[of n _ UA "(\<lambda>_. undefined)" S H]) 
-      (auto simp add: x)
+        (auto simp add: x)
   qed
   then show ?thesis by (subst purification_run_mixed_adv[OF assms(1,2)], simp, 
-     subst purification_run_mixed_adv[OF assms(1,2)], simp)
-    (use assms in \<open>auto simp add: sandwich_tc_sum intro!: sum.cong\<close>)
+        subst purification_run_mixed_adv[OF assms(1,2)], simp)
+      (use assms in \<open>auto simp add: sandwich_tc_sum intro!: sum.cong\<close>)
 qed
 
 
 lemma run_mixed_adv_projection:
-assumes "\<And>i. i < d + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
+  assumes "\<And>i. i < d + 1 \<Longrightarrow> fst ` Rep_kraus_family (kf_Fst (F i)::
     (('mem \<times> 'l) ell2, ('mem \<times> 'l) ell2, unit) kraus_family) \<noteq> {}"
-assumes "n<d+1"
-shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
+  assumes "n<d+1"
+  shows "sandwich_tc (Proj_ket_upto (has_bits_upto n)) 
   (run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H) = 
   run_mixed_adv n (\<lambda>n. kf_Fst (F n)) (US S) init_B X_for_B Y_for_B H"
 proof -
@@ -431,10 +431,10 @@ proof -
       using inj_on_kf_Fst by auto
     have rew: "\<rho>sum = (\<lambda>f. run_mixed_adv n f (US S) init_B X_for_B Y_for_B H) o 
       (\<lambda>f. \<lambda>n\<in>{0..<n+1}. kf_Fst (f n))" unfolding \<rho>sum_def
-    using run_mixed_adv_kf_Fst_restricted[where init' = init_B and X' = X_for_B and Y'=Y_for_B] 
-    by auto
+      using run_mixed_adv_kf_Fst_restricted[where init' = init_B and X' = X_for_B and Y'=Y_for_B] 
+      by auto
     show ?thesis unfolding rew  by (subst has_sum_reindex[OF inj, symmetric]) 
-      (unfold finite_kraus_subadv_Fst_invert[symmetric], rule \<rho>_has_sum')
+        (unfold finite_kraus_subadv_Fst_invert[symmetric], rule \<rho>_has_sum')
   qed
   have elem: "(sandwich_tc (Proj_ket_upto (has_bits_upto n)) o \<rho>sum) x = \<rho>sum x" 
     if "x \<in> (finite_kraus_subadv F n)" for x unfolding \<rho>sum_def o_def
@@ -467,18 +467,18 @@ text \<open>Lemmas of commutation with non-Find event\<close>
 
 
 lemma Proj_commutes_with_Uquery:
-"Snd (selfbutter (ket empty)) o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery G) =
+  "Snd (selfbutter (ket empty)) o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery G) =
  (X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L Snd (selfbutter (ket empty))"
-unfolding Snd_def by (simp add: UqueryH_tensor_id_cblinfunB comp_tensor_op) 
+  unfolding Snd_def by (simp add: UqueryH_tensor_id_cblinfunB comp_tensor_op) 
 
 
 lemma run_mixed_adv_G_H_same:
-assumes "(H,G,S,z)\<in>carrier" "n<d+1"
-shows "sandwich_tc (Snd (selfbutter (ket empty))) 
+  assumes "(H,G,S,z)\<in>carrier" "n<d+1"
+  shows "sandwich_tc (Snd (selfbutter (ket empty))) 
     (run_mixed_adv n (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B H) =
   sandwich_tc (Snd (selfbutter (ket empty)))
     (run_mixed_adv n (\<lambda>n. kf_Fst (E n)) (US S) init_B X_for_B Y_for_B G)"
-using assms(2) proof (induct n)
+  using assms(2) proof (induct n)
   case (Suc n)
   have "n<d" "n<Suc d" using Suc by auto
   let ?P = "Snd (selfbutter (ket empty))"
@@ -490,11 +490,11 @@ using assms(2) proof (induct n)
   also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L ?P o\<^sub>C\<^sub>L US S n o\<^sub>C\<^sub>L ?P') (?\<rho> n H))"
     by (subst Proj_commutes_with_Uquery, subst run_mixed_adv_projection[symmetric])
-       (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
+      (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
   also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L Fst (not_S_embed S) o\<^sub>C\<^sub>L ?P) (?\<rho> n H))"
-     using selfbutter_empty_US_Proj_ket_upto[OF \<open>n<d\<close>]
-     by (metis (no_types, lifting) sandwich_tc_compose')
+    using selfbutter_empty_US_Proj_ket_upto[OF \<open>n<d\<close>]
+    by (metis (no_types, lifting) sandwich_tc_compose')
   also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L Fst (not_S_embed S) o\<^sub>C\<^sub>L ?P) (?\<rho> n H))"
     using Uquery_G_H_same_on_not_S_embed_tensor assms by auto
@@ -504,11 +504,11 @@ using assms(2) proof (induct n)
   also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc ((X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L ?P o\<^sub>C\<^sub>L US S n o\<^sub>C\<^sub>L ?P') (?\<rho> n G))"
     using selfbutter_empty_US_Proj_ket_upto[OF \<open>n<d\<close>]
-     by (metis (no_types, lifting) sandwich_tc_compose')
+    by (metis (no_types, lifting) sandwich_tc_compose')
   also have "\<dots> = kf_apply (kf_Fst (E (Suc n)))
     (sandwich_tc (?P o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery G) o\<^sub>C\<^sub>L US S n) (?\<rho> n G))" 
-  by (subst Proj_commutes_with_Uquery, subst (2) run_mixed_adv_projection[symmetric])
-     (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
+    by (subst Proj_commutes_with_Uquery, subst (2) run_mixed_adv_projection[symmetric])
+      (auto simp add: Fst_E_nonzero sandwich_tc_compose' \<open>n<Suc d\<close>)
   also have "\<dots> = sandwich_tc ?P (?\<rho> (Suc n) G)"
     using sandwich_tc_kf_apply_Fst[symmetric] by (auto simp add: sandwich_tc_compose')
   finally show ?case by auto
@@ -516,8 +516,8 @@ qed auto
 
 
 lemma run_mixed_B_G_H_same:
-assumes "(H,G,S,z)\<in>carrier"
-shows "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E H S) = 
+  assumes "(H,G,S,z)\<in>carrier"
+  shows "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E H S) = 
 sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E G S)"
 proof -
   have "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E H S) =
@@ -537,55 +537,55 @@ qed
 
 
 lemma \<rho>right_G_H_same:
-"sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_H.\<rho>right E) = 
+  "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_H.\<rho>right E) = 
  sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_G.\<rho>right E)"
 proof -
   have "sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_H.\<rho>right E) = 
     (\<Sum>(H,G,S,z)\<in>carrier. distr (H,G,S,z) *\<^sub>C 
     sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E H S))"
-  unfolding mixed_H.\<rho>right_def unfolding carrier_H_def distr_H_def 
+    unfolding mixed_H.\<rho>right_def unfolding carrier_H_def distr_H_def 
     by (subst sum.reindex) (auto simp add: inj_on_def case_prod_beta sandwich_tc_sum 
-    sandwich_tc_scaleC_right intro!: sum.cong)
+        sandwich_tc_scaleC_right intro!: sum.cong)
   also have "\<dots> = (\<Sum>(H,G,S,z)\<in>carrier. distr (H,G,S,z) *\<^sub>C 
     sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (run_mixed_B E G S))"
     using run_mixed_B_G_H_same  by (auto intro!: sum.cong)
   also have "\<dots> = sandwich_tc (Q \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_G.\<rho>right E)" 
     unfolding mixed_G.\<rho>right_def unfolding carrier_G_def distr_G_def 
     by (subst sum.reindex) (auto simp add: inj_on_def case_prod_beta sandwich_tc_sum 
-    sandwich_tc_scaleC_right intro!: sum.cong)
+        sandwich_tc_scaleC_right intro!: sum.cong)
   finally show ?thesis by auto
 qed
 
 lemma trace_compose_tcr_H_G_same:
-"trace_tc (compose_tcr (Snd (selfbutter (ket empty))) (mixed_H.\<rho>right E)) =
+  "trace_tc (compose_tcr (Snd (selfbutter (ket empty))) (mixed_H.\<rho>right E)) =
  trace_tc (compose_tcr (Snd (selfbutter (ket empty))) (mixed_G.\<rho>right E))"
 proof -
   have "trace (from_trace_class
     (compose_tcr (Snd (selfbutter (ket empty))) (mixed_H.\<rho>right E)) o\<^sub>C\<^sub>L (Snd (selfbutter (ket empty)))*) =
     trace (from_trace_class
     (compose_tcr (Snd (selfbutter (ket empty))) (mixed_G.\<rho>right E)) o\<^sub>C\<^sub>L (Snd (selfbutter (ket empty)))*)" 
-  by (metis (no_types, opaque_lifting) Snd_def \<rho>right_G_H_same compose_tcr.rep_eq 
-    from_trace_class_sandwich_tc sandwich_apply)
+    by (metis (no_types, opaque_lifting) Snd_def \<rho>right_G_H_same compose_tcr.rep_eq 
+        from_trace_class_sandwich_tc sandwich_apply)
   then have "trace (from_trace_class
     (compose_tcr (Snd (selfbutter (ket empty))) (mixed_H.\<rho>right E))) =
     trace (from_trace_class
     (compose_tcr (Snd (selfbutter (ket empty))) (mixed_G.\<rho>right E)))" 
     by (smt (verit, best) Snd_def butterfly_is_Proj cblinfun_assoc_left(1) circularity_of_trace 
-      compose_tcr.rep_eq is_Proj_algebraic is_Proj_id is_Proj_tensor_op norm_ket 
-      trace_class_from_trace_class)
+        compose_tcr.rep_eq is_Proj_algebraic is_Proj_id is_Proj_tensor_op norm_ket 
+        trace_class_from_trace_class)
   then show ?thesis unfolding trace_tc.rep_eq by auto
 qed
 
-  
+
 
 text \<open>The probability of not Find and the adversary succeeding for H\S and G\S are the same.
 $Pr [b \and \not Find:b\leftarrow A^{H\backslash S}(z)] = 
  Pr [b \and \not Find:b\leftarrow A^{G\backslash S}(z)]$\<close>
 
 lemma Pright_G_H_same:
-"mixed_H.Pright (Q \<otimes>\<^sub>o selfbutter (ket empty)) = mixed_G.Pright (Q \<otimes>\<^sub>o selfbutter (ket empty))"
-unfolding mixed_H.Pright_def mixed_G.Pright_def mixed_G.PM_altdef 
-using \<rho>right_G_H_same[where Q = Q] by auto
+  "mixed_H.Pright (Q \<otimes>\<^sub>o selfbutter (ket empty)) = mixed_G.Pright (Q \<otimes>\<^sub>o selfbutter (ket empty))"
+  unfolding mixed_H.Pright_def mixed_G.Pright_def mixed_G.PM_altdef 
+  using \<rho>right_G_H_same[where Q = Q] by auto
 
 
 
@@ -594,8 +594,8 @@ text \<open>The finding event occurs with the same probability for G and H
 if the overall norm stays the same.\<close>
 
 lemma Pfind_G_H_same:
-assumes "norm (mixed_H.\<rho>right E) = norm (mixed_G.\<rho>right E)"
-shows "mixed_H.Pfind E = mixed_G.Pfind E"
+  assumes "norm (mixed_H.\<rho>right E) = norm (mixed_G.\<rho>right E)"
+  shows "mixed_H.Pfind E = mixed_G.Pfind E"
 proof -
   have "mixed_H.Pfind E = trace_tc (compose_tcr 
   (id_cblinfun - Snd (selfbutter (ket empty))::('mem\<times>'l) update) (mixed_H.\<rho>right E))"
@@ -623,7 +623,7 @@ proof -
 qed
 
 lemma Pfind_G_H_same_nonterm:
-shows "(mixed_H.Pfind E - mixed_G.Pfind E) = 
+  shows "(mixed_H.Pfind E - mixed_G.Pfind E) = 
   (norm (mixed_H.\<rho>right E) - norm (mixed_G.\<rho>right E))"
 proof -
   have "mixed_H.Pfind E = trace_tc (compose_tcr 
@@ -657,12 +657,12 @@ qed
 text \<open>The general version of the O2H with non-termination part.\<close>
 
 theorem mixed_o2h_nonterm:
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)
 + 2 * sqrt ((d+1) * Re (mixed_G.Pfind E) + d* mixed_G.P_nonterm E)"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)
 + sqrt ((d+1) * Re (mixed_G.Pfind E) + d* mixed_G.P_nonterm E)"
 proof -
@@ -702,11 +702,11 @@ text \<open>The general version of the O2H with terminating adversary. This form
 Theorem 1.\<close>
 
 theorem mixed_o2h_term:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  4 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  4 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
     by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
@@ -720,11 +720,11 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   have terminG: "mixed_G.P_nonterm E = 0" 
     unfolding mixed_G.P_nonterm_def using normGright normGcount 
     by (smt (verit, del_insts) Re_complex_of_real mixed_G.\<rho>count_pos mixed_G.\<rho>right_pos norm_eq_zero 
-      norm_le_zero_iff norm_of_real norm_pths(2) norm_tc_pos)
+        norm_le_zero_iff norm_of_real norm_pths(2) norm_tc_pos)
   show "\<bar>mixed_H.Pleft P - mixed_G.Pleft P\<bar> \<le>  4 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm(1) Pfind_G_H_same[OF norm] terminH terminG by auto
   show "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pleft P)\<bar> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
@@ -738,18 +738,18 @@ text \<open>Other formulations of the mixed o2h.\<close>
 text \<open>Theorem 1, definition of Pright (2)\<close>
 
 definition Proj_2  :: "('mem \<times> 'l) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('mem \<times> 'l) ell2" where
-"Proj_2 = P \<otimes>\<^sub>o id_cblinfun"
+  "Proj_2 = P \<otimes>\<^sub>o id_cblinfun"
 
 lemma norm_Proj_2:
-"norm Proj_2 \<le> 1"
-unfolding Proj_2_def using mixed_H.norm_P by (simp add: tensor_op_norm)
+  "norm Proj_2 \<le> 1"
+  unfolding Proj_2_def using mixed_H.norm_P by (simp add: tensor_op_norm)
 
 theorem mixed_o2h_nonterm_2:
-shows 
-"\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_2)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_2)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
 proof -
   have "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> = 
@@ -771,12 +771,12 @@ proof -
 qed
 
 theorem mixed_o2h_term_2:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le> 
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_2)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_2)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -786,7 +786,7 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   show "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_2\<bar> \<le> 
     2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm_2(1) terminH by auto
@@ -800,27 +800,27 @@ text \<open>Theorem 1, definition of Pright (3)\<close>
 
 
 definition Proj_3  :: "('mem \<times> 'l) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('mem \<times> 'l) ell2" where
-"Proj_3 = P \<otimes>\<^sub>o selfbutter (ket empty)"
+  "Proj_3 = P \<otimes>\<^sub>o selfbutter (ket empty)"
 
 lemma is_Proj_3:
-"is_Proj Proj_3"
-unfolding Proj_3_def 
-by (simp add: butterfly_is_Proj is_Proj_tensor_op mixed_G.is_Proj_P)
+  "is_Proj Proj_3"
+  unfolding Proj_3_def 
+  by (simp add: butterfly_is_Proj is_Proj_tensor_op mixed_G.is_Proj_P)
 
 lemma Proj_3_altdef:
-"Proj_3 = Proj ((P \<otimes>\<^sub>o id_cblinfun) *\<^sub>S \<top> \<squnion> (id_cblinfun \<otimes>\<^sub>o selfbutter (ket empty)) *\<^sub>S \<top>)"
-oops
+  "Proj_3 = Proj ((P \<otimes>\<^sub>o id_cblinfun) *\<^sub>S \<top> \<squnion> (id_cblinfun \<otimes>\<^sub>o selfbutter (ket empty)) *\<^sub>S \<top>)"
+  oops
 
 lemma norm_Proj_3:
-"norm Proj_3 \<le> 1"
-unfolding Proj_3_def using mixed_H.norm_P by (simp add: norm_butterfly tensor_op_norm)
+  "norm Proj_3 \<le> 1"
+  unfolding Proj_3_def using mixed_H.norm_P by (simp add: norm_butterfly tensor_op_norm)
 
 theorem mixed_o2h_nonterm_3:
-shows 
-"\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_3)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_3)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
 proof -
   have "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> = 
@@ -842,12 +842,12 @@ proof -
 qed
 
 theorem mixed_o2h_term_3:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le> 
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_3)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_3)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -857,7 +857,7 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   show "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_3\<bar> \<le> 
     2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm_3(1) terminH by auto
@@ -870,17 +870,17 @@ qed
 text \<open>Theorem 1, definition of Pright (4)\<close>
 
 theorem mixed_o2h_nonterm_4:
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
 proof -
   have "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> = 
     \<bar>mixed_H.Pleft' Proj_3 - mixed_H.Pright Proj_3\<bar>"
     using Pright_G_H_same unfolding mixed_G.Pleft_Pleft'_empty mixed_H.Pleft_Pleft'_empty
-    Proj_3_def by auto
+      Proj_3_def by auto
   also have "\<dots> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
     using mixed_H.estimate_Pfind[OF norm_Proj_3]
     by auto
@@ -890,7 +890,7 @@ proof -
   have "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> = 
     \<bar>sqrt (mixed_H.Pleft' Proj_3) - sqrt (mixed_H.Pright Proj_3)\<bar>"
     using Pright_G_H_same unfolding mixed_G.Pleft_Pleft'_empty mixed_H.Pleft_Pleft'_empty
-    Proj_3_def by auto
+      Proj_3_def by auto
   also have "\<dots> \<le> sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
     using mixed_H.estimate_Pfind_sqrt[OF norm_Proj_3] by auto
   finally show "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> \<le> 
@@ -899,12 +899,12 @@ proof -
 qed
 
 theorem mixed_o2h_term_4:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le> 
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_3)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -914,7 +914,7 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   show"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_3\<bar> \<le> 
     2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm_4(1) terminH by auto
@@ -937,38 +937,38 @@ Still, for the projection, we need to joint the two projective spaces.
 
 
 definition Proj_5 :: "('mem \<times> 'l) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('mem \<times> 'l) ell2" where
-"Proj_5 = Proj (((P \<otimes>\<^sub>o id_cblinfun) *\<^sub>S \<top>) \<squnion> ((id_cblinfun \<otimes>\<^sub>o (id_cblinfun - selfbutter (ket empty))) *\<^sub>S \<top>))"
+  "Proj_5 = Proj (((P \<otimes>\<^sub>o id_cblinfun) *\<^sub>S \<top>) \<squnion> ((id_cblinfun \<otimes>\<^sub>o (id_cblinfun - selfbutter (ket empty))) *\<^sub>S \<top>))"
 
 lemma is_Proj_5:
-"is_Proj Proj_5"
-unfolding Proj_5_def by (simp)
+  "is_Proj Proj_5"
+  unfolding Proj_5_def by (simp)
 
 
 lemma Proj_5_altdef:
-"Proj_5 = Proj_3 + mixed_H.end_measure"
-unfolding Proj_5_def Proj_3_def by (subst splitting_Proj_or[OF mixed_H.is_Proj_P]) 
- (auto simp add: mixed_G.end_measure_def Snd_def butterfly_is_Proj)
+  "Proj_5 = Proj_3 + mixed_H.end_measure"
+  unfolding Proj_5_def Proj_3_def by (subst splitting_Proj_or[OF mixed_H.is_Proj_P]) 
+    (auto simp add: mixed_G.end_measure_def Snd_def butterfly_is_Proj)
 
 
 lemma norm_Proj_5:
-"norm Proj_5 \<le> 1"
-unfolding Proj_5_def by (simp add: norm_is_Proj)
+  "norm Proj_5 \<le> 1"
+  unfolding Proj_5_def by (simp add: norm_is_Proj)
 
 
 
 
 theorem mixed_o2h_nonterm_5:
-shows 
-"\<bar>mixed_H.Pleft P - (mixed_H.Pright Proj_5)\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - (mixed_H.Pright Proj_5)\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_5)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_5)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
 proof -
   have "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> = 
     \<bar>mixed_H.Pleft' Proj_5 - mixed_H.Pright Proj_5\<bar>"
     unfolding Proj_5_altdef Proj_3_def mixed_H.Pleft_Pleft'_case5[OF mixed_H.is_Proj_P] 
-    mixed_H.Pfind_Pright Fst_def by auto
+      mixed_H.Pfind_Pright Fst_def by auto
   also have "\<dots> \<le>  2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E)"
     using mixed_H.estimate_Pfind[OF norm_Proj_5] by auto
   finally show "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le>  
@@ -985,12 +985,12 @@ proof -
 qed
 
 theorem mixed_o2h_term_5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le> 
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_5)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_H.Pright Proj_5)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -1000,7 +1000,7 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   show "\<bar>mixed_H.Pleft P - mixed_H.Pright Proj_5\<bar> \<le> 
     2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm_5(1) terminH by auto
@@ -1014,27 +1014,27 @@ qed
 text \<open>Theorem 1, definition of Pright (6)\<close>
 
 lemma Pright_G_H_case5_nonterm:
-"mixed_H.Pright Proj_5 - mixed_G.Pright Proj_5 = norm (mixed_H.\<rho>right E) - norm (mixed_G.\<rho>right E)"
+  "mixed_H.Pright Proj_5 - mixed_G.Pright Proj_5 = norm (mixed_H.\<rho>right E) - norm (mixed_G.\<rho>right E)"
 proof -
   have "mixed_H.Pright Proj_5 - mixed_G.Pright Proj_5 = 
     Re (trace_tc (compose_tcr Proj_5 (mixed_H.\<rho>right E))) -
     Re (trace_tc (compose_tcr Proj_5 (mixed_G.\<rho>right E)))"
-  unfolding mixed_H.Pright_def mixed_G.Pright_def mixed_H.PM_altdef mixed_G.PM_altdef
-  by (smt (verit, best) cblinfun_assoc_left(1) circularity_of_trace compose_tcr.rep_eq 
-    from_trace_class_sandwich_tc is_Proj_5 is_Proj_algebraic sandwich_apply trace_class_from_trace_class 
-    trace_tc.rep_eq)
+    unfolding mixed_H.Pright_def mixed_G.Pright_def mixed_H.PM_altdef mixed_G.PM_altdef
+    by (smt (verit, best) cblinfun_assoc_left(1) circularity_of_trace compose_tcr.rep_eq 
+        from_trace_class_sandwich_tc is_Proj_5 is_Proj_algebraic sandwich_apply trace_class_from_trace_class 
+        trace_tc.rep_eq)
   also have "\<dots> = Re (trace_tc (compose_tcr Proj_3 (mixed_H.\<rho>right E))) +
            Re (trace_tc (compose_tcr mixed_G.end_measure (mixed_H.\<rho>right E))) -
     Re (trace_tc (compose_tcr Proj_3 (mixed_G.\<rho>right E))) -
     Re (trace_tc (compose_tcr mixed_G.end_measure (mixed_G.\<rho>right E)))" 
-  unfolding Proj_5_altdef by (auto simp add: compose_tcr.add_left trace_tc_plus)
+    unfolding Proj_5_altdef by (auto simp add: compose_tcr.add_left trace_tc_plus)
   also have "\<dots> = Re (trace_tc (sandwich_tc (P \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_H.\<rho>right E))) +
            Re (trace_tc (compose_tcr mixed_G.end_measure (mixed_H.\<rho>right E))) -
     Re (trace_tc (sandwich_tc (P \<otimes>\<^sub>o selfbutter (ket empty)) (mixed_G.\<rho>right E))) -
     Re (trace_tc (compose_tcr mixed_G.end_measure (mixed_G.\<rho>right E)))" 
     by (smt (verit, del_insts) Proj_3_def cblinfun_assoc_left(1) circularity_of_trace compose_tcr.rep_eq 
-    from_trace_class_sandwich_tc is_Proj_3 is_Proj_algebraic sandwich_apply trace_class_from_trace_class 
-    trace_tc.rep_eq)
+        from_trace_class_sandwich_tc is_Proj_3 is_Proj_algebraic sandwich_apply trace_class_from_trace_class 
+        trace_tc.rep_eq)
   also have "\<dots> = mixed_H.Pright Proj_3 - mixed_G.Pright Proj_3 + Re (mixed_H.Pfind E - mixed_G.Pfind E)"
     by (simp add: Pright_G_H_same Proj_3_def \<rho>right_G_H_same mixed_G.Pfind_def mixed_H.Pfind_def)
   also have "\<dots> = Re (norm (mixed_H.\<rho>right E) - norm (mixed_G.\<rho>right E))"
@@ -1044,8 +1044,8 @@ qed
 
 
 lemma Pright_G_H_case5:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows "mixed_H.Pright Proj_5 = mixed_G.Pright Proj_5"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows "mixed_H.Pright Proj_5 = mixed_G.Pright Proj_5"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
     by (rule mixed_H.trace_preserving_norm_\<rho>right[OF trace_preserving_kf_Fst[OF assms]])
@@ -1056,11 +1056,11 @@ qed
 
 
 theorem mixed_o2h_nonterm_6:
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le>  
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le>  
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E) + 
     \<bar>norm (mixed_H.\<rho>right E) - norm (mixed_G.\<rho>right E)\<bar>"
-(* We leave out this version, because we get into trouble with the sqrt and the nontermination part.
+    (* We leave out this version, because we get into trouble with the sqrt and the nontermination part.
 and 
 "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_5)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E) + d* mixed_H.P_nonterm E) + 
@@ -1084,12 +1084,12 @@ qed
 
 
 theorem mixed_o2h_term_6:
-assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
-shows 
-"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le> 
+  assumes "\<And>i. i<d+1 \<Longrightarrow> km_trace_preserving (kf_apply (E i))"
+  shows 
+    "\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le> 
   2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
-and 
-"\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_5)\<bar> \<le> 
+    and 
+    "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_5)\<bar> \<le> 
   sqrt ((d+1) * Re (mixed_H.Pfind E))"
 proof -
   have normHright: "norm (mixed_H.\<rho>right E) = 1" 
@@ -1101,14 +1101,14 @@ proof -
   have terminH: "mixed_H.P_nonterm E = 0" 
     unfolding mixed_H.P_nonterm_def using normHright normHcount 
     by (metis cmod_Re complex_of_real_nn_iff mixed_H.\<rho>count_pos mixed_H.\<rho>right_pos norm_le_zero_iff 
-    norm_pths(2) norm_tc_pos norm_zero of_real_0)
+        norm_pths(2) norm_tc_pos norm_zero of_real_0)
   show"\<bar>mixed_H.Pleft P - mixed_G.Pright Proj_5\<bar> \<le> 
     2 * sqrt ((d+1) * Re (mixed_H.Pfind E))"
     using mixed_o2h_nonterm_6(1) terminH unfolding normHright normGright by auto
 
   have nonterm_zero: "mixed_H.P_nonterm E = 0"
     unfolding mixed_H.P_nonterm_def using normHright normHcount
-    mixed_H.P_nonterm_def terminH by presburger
+      mixed_H.P_nonterm_def terminH by presburger
   have "\<bar>sqrt (mixed_H.Pleft P) - sqrt (mixed_G.Pright Proj_5)\<bar> = 
     \<bar>sqrt (mixed_H.Pleft' Proj_5) - sqrt (mixed_H.Pright Proj_5)\<bar>"
     using Pright_G_H_case5[OF assms, symmetric] 

@@ -15,12 +15,12 @@ section \<open>Purification of the Adversary\<close>
 text \<open>Purification of composed kraus maps.\<close>
 
 definition purify_comp_kraus :: 
-"nat \<Rightarrow> (nat \<Rightarrow> ('a::chilbert_space, 'b::chilbert_space, 'c) kraus_family) \<Rightarrow> (nat \<Rightarrow> 'a \<Rightarrow>\<^sub>C\<^sub>L 'b) set" where
-"purify_comp_kraus n \<EE> = PiE {0..<n+1} (\<lambda>i. (fst ` (Rep_kraus_family (\<EE> i))))"
+  "nat \<Rightarrow> (nat \<Rightarrow> ('a::chilbert_space, 'b::chilbert_space, 'c) kraus_family) \<Rightarrow> (nat \<Rightarrow> 'a \<Rightarrow>\<^sub>C\<^sub>L 'b) set" where
+  "purify_comp_kraus n \<EE> = PiE {0..<n+1} (\<lambda>i. (fst ` (Rep_kraus_family (\<EE> i))))"
 
 
 definition comp_upto :: "(nat \<Rightarrow> ('a::chilbert_space) \<Rightarrow>\<^sub>C\<^sub>L 'a) \<Rightarrow> nat \<Rightarrow> 'a \<Rightarrow>\<^sub>C\<^sub>L 'a" where
-"comp_upto f n = fold (\<lambda>i x. f i o\<^sub>C\<^sub>L x) [0..<n+1] id_cblinfun"
+  "comp_upto f n = fold (\<lambda>i x. f i o\<^sub>C\<^sub>L x) [0..<n+1] id_cblinfun"
 
 
 text \<open>Some auxiliary lemmas on injectivity, Fst and finiteness.\<close>
@@ -30,8 +30,8 @@ lemma Rep_kf_id:
   by (simp add: kf_id_def kf_of_op.rep_eq del: kf_of_op_id)
 
 lemma fst_Rep_kf_Fst:
-fixes \<EE> :: "('a ell2, 'b ell2, unit) kraus_family"
-shows "fst ` (Rep_kraus_family (kf_Fst \<EE>)) =  Fst ` (fst ` (Rep_kraus_family \<EE>))"
+  fixes \<EE> :: "('a ell2, 'b ell2, unit) kraus_family"
+  shows "fst ` (Rep_kraus_family (kf_Fst \<EE>)) =  Fst ` (fst ` (Rep_kraus_family \<EE>))"
 proof (transfer, safe, goal_cases)
   case (1 \<EE> x a aa)
   then have "aa \<in>fst `\<EE>" by (metis fst_conv image_eqI)
@@ -43,56 +43,56 @@ qed
 
 
 lemma inj_on_Fst:
-shows "inj_on Fst A"
-unfolding Fst_def inj_on_def using inj_tensor_left[OF id_cblinfun_not_0] unfolding inj_def by auto
+  shows "inj_on Fst A"
+  unfolding Fst_def inj_on_def using inj_tensor_left[OF id_cblinfun_not_0] unfolding inj_def by auto
 
 
 lemma finite_kf_Fst:
-fixes \<EE> :: "('mem ell2, 'mem ell2, unit) kraus_family"
-assumes "finite (Rep_kraus_family \<EE>)"
-shows "finite (Rep_kraus_family (kf_Fst \<EE>))"
-using assms by transfer auto
+  fixes \<EE> :: "('mem ell2, 'mem ell2, unit) kraus_family"
+  assumes "finite (Rep_kraus_family \<EE>)"
+  shows "finite (Rep_kraus_family (kf_Fst \<EE>))"
+  using assms by transfer auto
 
 lemma finite_kf_id:
-"finite (Rep_kraus_family kf_id)"
+  "finite (Rep_kraus_family kf_id)"
   by (simp add: kf_of_op.rep_eq flip: kf_of_op_id)
 
 
 lemma inj_on_fst_Rep_kraus_family:
-fixes \<EE> :: "('a ell2,'b ell2,unit) kraus_family"
-shows "inj_on fst (Rep_kraus_family \<EE>)"
-unfolding inj_on_def by fastforce
+  fixes \<EE> :: "('a ell2,'b ell2,unit) kraus_family"
+  shows "inj_on fst (Rep_kraus_family \<EE>)"
+  unfolding inj_on_def by fastforce
 
 
 lemma comp_kraus_maps_set_finite:
-assumes "\<And>i. i<n+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-shows "finite (purify_comp_kraus n \<EE>)"
-unfolding purify_comp_kraus_def by (intro finite_PiE) (auto simp add: assms)
+  assumes "\<And>i. i<n+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  shows "finite (purify_comp_kraus n \<EE>)"
+  unfolding purify_comp_kraus_def by (intro finite_PiE) (auto simp add: assms)
 
 
 text \<open>Showing conditions of Kraus maps.\<close>
 
 
 lemma norm_square_in_kraus_map:
-fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
-assumes "kf_bound \<EE> \<le> id_cblinfun"
-assumes "U \<in> fst ` Rep_kraus_family \<EE>"
-shows "U* o\<^sub>C\<^sub>L U \<le> id_cblinfun"
+  fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
+  assumes "kf_bound \<EE> \<le> id_cblinfun"
+  assumes "U \<in> fst ` Rep_kraus_family \<EE>"
+  shows "U* o\<^sub>C\<^sub>L U \<le> id_cblinfun"
 proof -
   have *: "{(U, ())} \<subseteq> Rep_kraus_family \<EE>" using assms(2) by auto
   show ?thesis using kf_bound_geq_sum[OF *] assms(1) by auto
 qed
 
 lemma norm_in_kraus_map:
-fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
-assumes "kf_bound \<EE> \<le> id_cblinfun"
-assumes "U \<in> fst ` Rep_kraus_family \<EE>"
-shows "norm U \<le> 1"
-using norm_square_in_kraus_map[OF assms] cond_to_norm_1 by auto
+  fixes \<EE> :: "('a ell2,'a ell2,unit) kraus_family"
+  assumes "kf_bound \<EE> \<le> id_cblinfun"
+  assumes "U \<in> fst ` Rep_kraus_family \<EE>"
+  shows "norm U \<le> 1"
+  using norm_square_in_kraus_map[OF assms] cond_to_norm_1 by auto
 
 lemma purify_comp_kraus_in_kraus_family:
-assumes "UA \<in> purify_comp_kraus n \<EE>" "j<n+1"
-shows "UA j \<in> fst ` Rep_kraus_family (\<EE> j)"
+  assumes "UA \<in> purify_comp_kraus n \<EE>" "j<n+1"
+  shows "UA j \<in> fst ` Rep_kraus_family (\<EE> j)"
 proof (intro PiE_mem[of UA "{0..<n+1}"])
   show "UA \<in> (\<Pi>\<^sub>E a\<in>{0..<n+1}. fst ` Rep_kraus_family (\<EE> a))" 
     using assms(1) unfolding purify_comp_kraus_def by auto
@@ -100,10 +100,10 @@ proof (intro PiE_mem[of UA "{0..<n+1}"])
 qed
 
 lemma norm_in_purify_comp_kraus:
-fixes \<EE> :: "nat \<Rightarrow> ('a ell2, 'a ell2, unit) kraus_family"
-assumes "\<And>i. i<n+1 \<Longrightarrow> kf_bound (\<EE> i) \<le> id_cblinfun"
-assumes "UA \<in> purify_comp_kraus n \<EE>" 
-shows "\<And>i. i<n+1 \<Longrightarrow> norm (UA i) \<le> 1"
+  fixes \<EE> :: "nat \<Rightarrow> ('a ell2, 'a ell2, unit) kraus_family"
+  assumes "\<And>i. i<n+1 \<Longrightarrow> kf_bound (\<EE> i) \<le> id_cblinfun"
+  assumes "UA \<in> purify_comp_kraus n \<EE>" 
+  shows "\<And>i. i<n+1 \<Longrightarrow> norm (UA i) \<le> 1"
 proof -
   fix i assume i: "i<n+1"
   have "UA i \<in> fst ` Rep_kraus_family (\<EE> i)"
@@ -113,15 +113,15 @@ qed
 
 
 lemma run_pure_adv_tc_over:
-assumes "m > n"
-shows "run_pure_adv_tc n (UA(m := x)) UB init' X' Y' H = run_pure_adv_tc n UA UB init' X' Y' H"
-using assms by (induct n arbitrary: m x) auto
+  assumes "m > n"
+  shows "run_pure_adv_tc n (UA(m := x)) UB init' X' Y' H = run_pure_adv_tc n UA UB init' X' Y' H"
+  using assms by (induct n arbitrary: m x) auto
 
 lemma run_pure_adv_tc_Fst_over:
-assumes "m > n"
-shows "run_pure_adv_tc n (Fst o UA(m := x)) UB init' X' Y' H = 
+  assumes "m > n"
+  shows "run_pure_adv_tc n (Fst o UA(m := x)) UB init' X' Y' H = 
        run_pure_adv_tc n (Fst o UA) UB init' X' Y' H"
-using assms by (induct n arbitrary: m x) auto
+  using assms by (induct n arbitrary: m x) auto
 
 
 
@@ -129,11 +129,11 @@ using assms by (induct n arbitrary: m x) auto
 text \<open>Purifications of the adversarial runs.\<close>
 
 lemma purification_run_mixed_adv:
-assumes "\<And>i. i<n+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-assumes "\<And>i. i<n+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
-shows "run_mixed_adv n \<EE> UB init' X' Y' H = 
+  assumes "\<And>i. i<n+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  assumes "\<And>i. i<n+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
+  shows "run_mixed_adv n \<EE> UB init' X' Y' H = 
   (\<Sum> UAs \<in> purify_comp_kraus n \<EE>. run_pure_adv_tc n UAs UB init' X' Y' H)"
-unfolding purify_comp_kraus_def using assms
+  unfolding purify_comp_kraus_def using assms
 proof (induct n)
   case 0
   have "kf_apply (\<EE> 0) (tc_selfbutter init') = 
@@ -143,12 +143,12 @@ proof (induct n)
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (UAs 0) (tc_selfbutter init')) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc E (tc_selfbutter init'))"
-  (is "?left = ?right")
+    (is "?left = ?right")
   proof -
     have inj1: "inj_on (\<lambda>UA. UA 0) (\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i))"
       by (smt (verit, best) PiE_ext inj_on_def singletonD)
     have non_empty: "(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)) \<noteq> {}" 
-    by (metis (no_types, lifting) "0"(2) PiE_eq_empty_iff Suc_eq_plus1 singleton_iff zero_less_Suc)
+      by (metis (no_types, lifting) "0"(2) PiE_eq_empty_iff Suc_eq_plus1 singleton_iff zero_less_Suc)
     have "?left = (\<Sum>UA \<in> (\<lambda>UA. UA 0) ` (\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc UA (tc_selfbutter init'))"
       by (subst sum.reindex) (auto simp add: inj1)
@@ -180,7 +180,7 @@ next
   also have "\<dots> = (\<Sum>UAs\<in>(\<lambda>(y, g). g(Suc d := y)) ` (fst ` Rep_kraus_family (\<EE> (Suc d)) \<times> 
     (\<Pi>\<^sub>E i\<in> {0..<Suc d}. fst ` Rep_kraus_family (\<EE> i))).
     sandwich_tc (UAs (Suc d) o\<^sub>C\<^sub>L (X';Y') (Uquery H) o\<^sub>C\<^sub>L UB d)(?\<Psi> UAs))" 
-   by (subst sum.reindex) (auto intro!: sum.cong simp add: o_def sandwich_tc_compose 
+    by (subst sum.reindex) (auto intro!: sum.cong simp add: o_def sandwich_tc_compose 
         run_pure_adv_tc_over inj2)
   also have "\<dots> = (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>insert (Suc d) {0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (UAs (Suc d) o\<^sub>C\<^sub>L (X';Y') (Uquery H) o\<^sub>C\<^sub>L UB d) (?\<Psi> UAs))"
@@ -190,19 +190,19 @@ qed
 
 
 lemma purification_run_mixed_A:
-assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
-shows "run_mixed_A \<EE> H = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_A_tc UAs H)"
-unfolding run_mixed_A_def run_pure_A_tc_def using assms
-by (auto intro!: purification_run_mixed_adv)
+  assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
+  shows "run_mixed_A \<EE> H = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_A_tc UAs H)"
+  unfolding run_mixed_A_def run_pure_A_tc_def using assms
+  by (auto intro!: purification_run_mixed_adv)
 
 
 lemma purification_run_mixed_B:
-assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
-shows "run_mixed_B \<EE> H S = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_B_tc UAs H S)"
-unfolding run_mixed_B_def run_pure_B_tc_def purify_comp_kraus_def 
-using assms
+  assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
+  shows "run_mixed_B \<EE> H S = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_B_tc UAs H S)"
+  unfolding run_mixed_B_def run_pure_B_tc_def purify_comp_kraus_def 
+  using assms
 proof (induct d)
   case 0
   let ?\<EE>0 = "kf_Fst (\<EE> 0)"
@@ -222,7 +222,7 @@ proof (induct d)
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs 0)) (tc_selfbutter init_B)) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B))"
-  (is "?left = ?right")
+    (is "?left = ?right")
   proof -
     have inj1: "inj_on (\<lambda>UA. UA 0) (\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i))"
       by (smt (verit, best) PiE_ext inj_on_def singletonD)
@@ -265,8 +265,8 @@ next
   also have "\<dots> = (\<Sum>UAs\<in>(\<lambda>(y, g). g(Suc d := y)) ` (fst ` Rep_kraus_family (\<EE> (Suc d)) \<times> 
     (\<Pi>\<^sub>E i\<in> {0..<Suc d}. fst ` Rep_kraus_family (\<EE> i))).
     sandwich_tc (Fst (UAs (Suc d)) o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d)(?\<Psi> (Fst o UAs)))" 
-   by (subst sum.reindex)(use run_pure_adv_tc_Fst_over[where init' = init_B and X' = X_for_B and Y' = Y_for_B] 
-    in \<open>auto intro!: sum.cong simp add: o_def sandwich_tc_compose inj1\<close>)
+    by (subst sum.reindex)(use run_pure_adv_tc_Fst_over[where init' = init_B and X' = X_for_B and Y' = Y_for_B] 
+        in \<open>auto intro!: sum.cong simp add: o_def sandwich_tc_compose inj1\<close>)
   also have "\<dots> = (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>insert (Suc d) {0..<Suc d}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs (Suc d)) o\<^sub>C\<^sub>L (X_for_B;Y_for_B) (Uquery H) o\<^sub>C\<^sub>L US S d) (?\<Psi> (Fst o UAs)))"
     by (subst PiE_insert_eq) auto
@@ -275,15 +275,15 @@ qed
 
 
 lemma purification_run_mixed_B_count_prep:
-assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
-assumes "n<d+1"
-shows "run_mixed_adv n (\<lambda>n. kf_Fst (\<EE> n)) (\<lambda>n. U_S' S)
+  assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
+  assumes "n<d+1"
+  shows "run_mixed_adv n (\<lambda>n. kf_Fst (\<EE> n)) (\<lambda>n. U_S' S)
      init_B_count X_for_C Y_for_C H =
     (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0..<n + 1}. fst ` Rep_kraus_family (\<EE> i)).
        run_pure_adv_tc n (Fst \<circ> UAs) (\<lambda>_. U_S' S) init_B_count X_for_C
         Y_for_C H)"
-using assms
+  using assms
 proof (induct n)
   case 0
   let ?\<EE>0 = "kf_Fst (\<EE> 0)"
@@ -302,7 +302,7 @@ proof (induct n)
   moreover have "(\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i)).
        sandwich_tc (Fst (UAs 0)) (tc_selfbutter init_B_count)) = 
     (\<Sum>E\<in>fst ` (Rep_kraus_family (\<EE> 0)). sandwich_tc (Fst E) (tc_selfbutter init_B_count))"
-  (is "?left = ?right")
+    (is "?left = ?right")
   proof -
     have inj1: "inj_on (\<lambda>UA. UA 0) (\<Pi>\<^sub>E i\<in>{0}. fst ` Rep_kraus_family (\<EE> i))"
       by (smt (verit, best) PiE_ext inj_on_def singletonD)
@@ -348,9 +348,9 @@ next
   also have "\<dots> = (\<Sum>UAs\<in>(\<lambda>(y, g). g(Suc n := y)) ` (fst ` Rep_kraus_family (\<EE> (Suc n)) \<times> 
     (\<Pi>\<^sub>E i\<in> {0..<Suc n}. fst ` Rep_kraus_family (\<EE> i))). sandwich_tc (Fst (UAs (Suc n)) o\<^sub>C\<^sub>L 
     (X_for_C;Y_for_C) (Uquery H) o\<^sub>C\<^sub>L U_S' S)(\<Psi> (Fst o UAs)))" 
-   unfolding \<Psi>_def by (subst sum.reindex) 
-    (use run_pure_adv_tc_Fst_over[where init' = init_B_count and X' = X_for_C and Y' = Y_for_C] 
-     in \<open>auto intro!: sum.cong simp add: o_def sandwich_tc_compose inj1\<close>)
+    unfolding \<Psi>_def by (subst sum.reindex) 
+      (use run_pure_adv_tc_Fst_over[where init' = init_B_count and X' = X_for_C and Y' = Y_for_C] 
+        in \<open>auto intro!: sum.cong simp add: o_def sandwich_tc_compose inj1\<close>)
   also have "\<dots> = (\<Sum>UAs\<in>(\<Pi>\<^sub>E i\<in>insert (Suc n) {0..<Suc n}. fst ` Rep_kraus_family (\<EE> i)).
     sandwich_tc (Fst (UAs (Suc n)) o\<^sub>C\<^sub>L (X_for_C;Y_for_C) (Uquery H) o\<^sub>C\<^sub>L U_S' S) 
     (\<Psi> (Fst o UAs)))"
@@ -362,11 +362,11 @@ next
 qed
 
 lemma purification_run_mixed_B_count:
-assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
-assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
-shows "run_mixed_B_count \<EE> H S = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_B_count_tc UAs H S)"
-unfolding run_mixed_B_count_def run_pure_B_count_tc_def purify_comp_kraus_def
-using purification_run_mixed_B_count_prep[where n=d, OF assms] by auto
+  assumes "\<And>i. i<d+1 \<Longrightarrow> finite (Rep_kraus_family (\<EE> i))"
+  assumes "\<And>i. i<d+1 \<Longrightarrow> fst ` Rep_kraus_family (\<EE> i) \<noteq> {}" (* Needed? *)
+  shows "run_mixed_B_count \<EE> H S = (\<Sum> UAs \<in> purify_comp_kraus d \<EE>. run_pure_B_count_tc UAs H S)"
+  unfolding run_mixed_B_count_def run_pure_B_count_tc_def purify_comp_kraus_def
+  using purification_run_mixed_B_count_prep[where n=d, OF assms] by auto
 
 
 
@@ -375,9 +375,9 @@ text \<open>Purification of kf_Fst\<close>
 
 
 lemma purification_kf_Fst:
-assumes "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (F i) \<noteq> {}"
-assumes "x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n)::(('a \<times> 'c) ell2, ('b \<times> 'c) ell2, unit) kraus_family)"
-shows "\<exists>UA. x = (\<lambda>a. if a<n+1 then (Fst (UA a)::('a \<times> 'c) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('b \<times> 'c) ell2) else undefined)"
+  assumes "\<And>i. i < n + 1 \<Longrightarrow> fst ` Rep_kraus_family (F i) \<noteq> {}"
+  assumes "x \<in> purify_comp_kraus n (\<lambda>n. kf_Fst (F n)::(('a \<times> 'c) ell2, ('b \<times> 'c) ell2, unit) kraus_family)"
+  shows "\<exists>UA. x = (\<lambda>a. if a<n+1 then (Fst (UA a)::('a \<times> 'c) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('b \<times> 'c) ell2) else undefined)"
 proof -
   have nonempty: "PiE {0..<n+1} (\<lambda>i. Fst ` fst ` Rep_kraus_family (F i)
     ::(('a \<times> 'c) ell2 \<Rightarrow>\<^sub>C\<^sub>L ('b \<times> 'c) ell2) set) \<noteq> {}"

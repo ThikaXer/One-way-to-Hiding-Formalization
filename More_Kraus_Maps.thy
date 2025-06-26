@@ -1,7 +1,7 @@
 theory More_Kraus_Maps
 
 imports Kraus_Maps.Kraus_Maps
-        Additional_Lemmas
+  Additional_Lemmas
 begin
 
 unbundle cblinfun_syntax
@@ -11,13 +11,13 @@ text \<open>Fst on kraus families.\<close>
 
 
 lemma inj_Fst_alt:
-assumes "c\<noteq>0"
-shows "a \<otimes>\<^sub>o c = b \<otimes>\<^sub>o c \<Longrightarrow> a = b"
-using inj_tensor_left[OF assms] unfolding inj_def by auto
+  assumes "c\<noteq>0"
+  shows "a \<otimes>\<^sub>o c = b \<otimes>\<^sub>o c \<Longrightarrow> a = b"
+  using inj_tensor_left[OF assms] unfolding inj_def by auto
 
 lift_definition kf_Fst :: "('a ell2, 'c ell2, unit) kraus_family \<Rightarrow> 
   (('a \<times> 'b) ell2, ('c \<times> 'b) ell2, unit) kraus_family" is 
-"\<lambda>E. (\<lambda>(x,_). (x \<otimes>\<^sub>o id_cblinfun, ())) ` E"
+  "\<lambda>E. (\<lambda>(x,_). (x \<otimes>\<^sub>o id_cblinfun, ())) ` E"
 proof (rename_tac \<EE>, intro CollectI)
   fix \<EE> :: \<open>('a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'c ell2 \<times> unit) set\<close> 
   assume \<open>\<EE> \<in> Collect kraus_family\<close>
@@ -44,7 +44,7 @@ proof (rename_tac \<EE>, intro CollectI)
         by (subst sum.reindex) (use \<open>inj_on f V\<close> in \<open>auto simp: case_prod_unfold f_def\<close>)
       also have \<open>\<dots> = (\<Sum>(E,x)\<in>V. (E* o\<^sub>C\<^sub>L E)) \<otimes>\<^sub>o id_cblinfun\<close>
         by (subst tensor_op_cbilinear.sum_left)
-           (simp add: case_prod_unfold comp_tensor_op tensor_op_adjoint)
+          (simp add: case_prod_unfold comp_tensor_op tensor_op_adjoint)
       also have \<open>\<dots> \<le> B \<otimes>\<^sub>o id_cblinfun\<close>
         using V_subset by (auto intro!: tensor_op_mono B)
       finally show ?thesis by-
@@ -71,20 +71,20 @@ qed
 
 (* TODO remove *)
 lemma summable_on_in_kf_Fst:
-fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
-and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
-shows "summable_on_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) (Rep_kraus_family G)"
+  fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
+    and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
+  shows "summable_on_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) (Rep_kraus_family G)"
 proof -
   have "bdd_above (sum (\<lambda>(E, x). E* o\<^sub>C\<^sub>L E) ` {F. finite F \<and> F \<subseteq> Rep_kraus_family G})"
     by (intro summable_wot_bdd_above[OF kf_bound_summable positive_cblinfun_squareI])
-       (auto simp add: case_prod_beta)
+      (auto simp add: case_prod_beta)
   then obtain B where B: \<open>(\<Sum>x\<in>S. fst x* o\<^sub>C\<^sub>L fst x) \<le> B\<close> if \<open>finite S\<close> and 
     \<open>S \<subseteq> (Rep_kraus_family G)\<close> for S
     apply atomize_elim unfolding bdd_above_def by (auto simp: case_prod_beta)
   have bound: "(\<Sum>x\<in>F. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) \<le> B \<otimes>\<^sub>o id_cblinfun" 
     if "finite F" "F \<subseteq> (Rep_kraus_family G)" for F
-  by (subst tensor_op_cbilinear.sum_left[symmetric], intro tensor_op_mono_left)
-     (auto simp add: B that) 
+    by (subst tensor_op_cbilinear.sum_left[symmetric], intro tensor_op_mono_left)
+      (auto simp add: B that) 
   have pos: "x \<in> (Rep_kraus_family G) \<Longrightarrow> 0 \<le> (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun" for x 
     using positive_cblinfun_squareI  positive_id_cblinfun tensor_op_pos by blast
   show ?thesis by (auto intro!: summable_wot_boundedI[OF bound pos]) 
@@ -92,9 +92,9 @@ qed
 
 (* TODO remove *)
 lemma infsum_in_kf_Fst:
-fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
-and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
-shows "infsum_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) (Rep_kraus_family G) \<le> 
+  fixes f :: "'c \<Rightarrow> 'a ell2 \<Rightarrow>\<^sub>C\<^sub>L 'a ell2"
+    and b :: "'b ell2 \<Rightarrow>\<^sub>C\<^sub>L 'b ell2"
+  shows "infsum_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) (Rep_kraus_family G) \<le> 
       (infsum_in cweak_operator_topology (\<lambda>x. fst x* o\<^sub>C\<^sub>L fst x) (Rep_kraus_family G)) \<otimes>\<^sub>o id_cblinfun"
 proof -
   have sum: "summable_on_in cweak_operator_topology (\<lambda>x. fst x* o\<^sub>C\<^sub>L fst x) (Rep_kraus_family G)"
@@ -124,14 +124,14 @@ proof -
 qed
 
 lemma kf_bound_kf_Fst:
-"kf_bound (kf_Fst F:: (('a \<times> 'b) ell2, ('c \<times> 'b) ell2, unit) kraus_family) \<le> 
+  "kf_bound (kf_Fst F:: (('a \<times> 'b) ell2, ('c \<times> 'b) ell2, unit) kraus_family) \<le> 
   kf_bound F \<otimes>\<^sub>o id_cblinfun"
 proof -
   have inj: "inj_on (\<lambda>(x, _). (x \<otimes>\<^sub>o id_cblinfun, ())) (Rep_kraus_family F)" 
     unfolding inj_on_def by (auto simp add: inj_Fst_alt[OF id_cblinfun_not_0])
   have "infsum_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun) (Rep_kraus_family F) \<le>
     infsum_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x)) (Rep_kraus_family F) \<otimes>\<^sub>o id_cblinfun"
-  by (rule infsum_in_kf_Fst) 
+    by (rule infsum_in_kf_Fst) 
   then have "infsum_in cweak_operator_topology (\<lambda>x. (fst x* o\<^sub>C\<^sub>L fst x) \<otimes>\<^sub>o id_cblinfun)(Rep_kraus_family F)
     \<le> infsum_in cweak_operator_topology (\<lambda>(E, x). E* o\<^sub>C\<^sub>L E) (Rep_kraus_family F) \<otimes>\<^sub>o id_cblinfun"
     by (metis (mono_tags, lifting) infsum_in_cong prod.case_eq_if)
@@ -139,22 +139,22 @@ proof -
     (x \<otimes>\<^sub>o (id_cblinfun ::'b update), ())) ` (Rep_kraus_family F)) \<le>
     (infsum_in cweak_operator_topology (\<lambda>(E, x). E* o\<^sub>C\<^sub>L E) (Rep_kraus_family F)) \<otimes>\<^sub>o id_cblinfun"
     by (subst infsum_in_reindex[OF inj]) 
-       (auto simp add: o_def case_prod_beta tensor_op_adjoint comp_tensor_op)
+      (auto simp add: o_def case_prod_beta tensor_op_adjoint comp_tensor_op)
   then show ?thesis 
     by (simp add: kf_Fst.rep_eq kf_bound.rep_eq)
 qed
 
 lemma sandwich_tc_kf_apply_Fst:
-"sandwich_tc (Snd (Q::'d update)) (kf_apply (kf_Fst F:: 
+  "sandwich_tc (Snd (Q::'d update)) (kf_apply (kf_Fst F:: 
  (('a\<times>'d) ell2, ('a\<times>'d) ell2, unit) kraus_family) \<rho>) = 
  kf_apply (kf_Fst F) (sandwich_tc (Snd Q) \<rho>)"
 proof -
   have sand: "sandwich_tc (Snd Q) (sandwich_tc a \<rho>) =
         sandwich_tc a (sandwich_tc (Snd Q) \<rho>)"
-  if "(a, ()) \<in> Rep_kraus_family (kf_Fst F)" for a
+    if "(a, ()) \<in> Rep_kraus_family (kf_Fst F)" for a
   proof -
     obtain x where a: "a = x \<otimes>\<^sub>o id_cblinfun" 
-    using \<open>(a, ()) \<in> Rep_kraus_family (kf_Fst F)\<close> unfolding kf_Fst.rep_eq by auto
+      using \<open>(a, ()) \<in> Rep_kraus_family (kf_Fst F)\<close> unfolding kf_Fst.rep_eq by auto
     show ?thesis unfolding a sandwich_tc_compose'[symmetric] Snd_def by (auto simp add: comp_tensor_op)
   qed
   have 1: "sum (sandwich_tc (Snd Q) o (\<lambda>E. (sandwich_tc (fst E) \<rho>))) F' = 
@@ -169,14 +169,14 @@ proof -
     by (metis (no_types, lifting) cond_case_prod_eta fst_conv kf_apply_summable)
   then show ?thesis unfolding kf_apply.rep_eq
     by (subst infsum_comm_additive_general[OF 1 2 3, symmetric]) 
-       (auto intro!: infsum_cong simp add: sand)
+      (auto intro!: infsum_cong simp add: sand)
 qed
 
 text \<open>kraus family Fst is trace preserving.\<close>
 
 
 lemma kf_apply_Fst_tensor:
-\<open>kf_apply (kf_Fst \<EE> ::(('c \<times> 'b) ell2, ('a \<times> 'b) ell2, unit) kraus_family) 
+  \<open>kf_apply (kf_Fst \<EE> ::(('c \<times> 'b) ell2, ('a \<times> 'b) ell2, unit) kraus_family) 
   (tc_tensor \<rho> \<sigma>) = tc_tensor (kf_apply \<EE> \<rho>) \<sigma>\<close>
 proof -
   have inj: \<open>inj_on (\<lambda>(E, x). (E \<otimes>\<^sub>o id_cblinfun, ())) (Rep_kraus_family \<EE>)\<close>
@@ -200,7 +200,7 @@ proof -
     by (simp add: kf_apply_def case_prod_unfold)
   also have \<open>\<dots> = tc_tensor (\<Sum>\<^sub>\<infinity>(E,x)\<in>Rep_kraus_family \<EE>. sandwich_tc E \<rho>) \<sigma>\<close>
     by (subst infsum_bounded_linear[where h=\<open>\<lambda>x. tc_tensor x \<sigma>\<close>, symmetric])
-       (use sum2 in \<open>auto simp add: o_def case_prod_unfold\<close>)
+      (use sum2 in \<open>auto simp add: o_def case_prod_unfold\<close>)
   also have \<open>\<dots> = tc_tensor (kf_apply \<EE> \<rho>) \<sigma>\<close>
     by (simp add: kf_apply_def case_prod_unfold)
   finally show ?thesis by auto
@@ -219,12 +219,12 @@ proof (rule fun_cong[where x=\<rho>], rule eq_from_separatingI2[OF separating_se
   from assms
   show \<open>partial_trace (kf_apply (kf_Fst \<EE>) (tc_tensor \<rho> \<sigma>)) =
         kf_apply \<EE> (partial_trace (tc_tensor \<rho> \<sigma>))\<close>
-  by (simp add: kf_apply_Fst_tensor kf_apply_scaleC partial_trace_tensor)
+    by (simp add: kf_apply_Fst_tensor kf_apply_scaleC partial_trace_tensor)
 qed
 
 lemma trace_preserving_kf_Fst:
-assumes "km_trace_preserving (kf_apply E)"
-shows "km_trace_preserving (kf_apply (
+  assumes "km_trace_preserving (kf_apply E)"
+  shows "km_trace_preserving (kf_apply (
     kf_Fst E ::(('a \<times> 'c) ell2, ('a \<times> 'c) ell2, unit) kraus_family))"
 proof - 
   have bounded: "bounded_clinear (\<lambda>\<rho>. trace_tc (kf_apply (kf_Fst E) \<rho>))"
@@ -238,7 +238,7 @@ proof -
   have "(\<lambda>\<rho>. trace_tc (kf_apply (kf_Fst E :: 
     (('a \<times> 'c) ell2, ('a \<times> 'c) ell2, unit) kraus_family) \<rho>)) = trace_tc"
     by (rule eq_from_separatingI2[OF separating_set_bounded_clinear_tc_tensor])
-       (auto simp add: bounded trace)
+      (auto simp add: bounded trace)
   then show ?thesis
     using assms unfolding km_trace_preserving_def
     by (metis kf_trace_preserving_def)
@@ -248,16 +248,16 @@ qed
 text \<open>Summability on Kraus maps\<close>
 
 lemma finite_kf_apply_has_sum:
-assumes "(f has_sum x) A"
-shows "((kf_apply \<FF> o f) has_sum kf_apply \<FF> x) A"
-unfolding o_def by (intro has_sum_bounded_linear[OF _ assms]) 
-   (auto simp add: bounded_clinear.bounded_linear kf_apply_bounded_clinear)
+  assumes "(f has_sum x) A"
+  shows "((kf_apply \<FF> o f) has_sum kf_apply \<FF> x) A"
+  unfolding o_def by (intro has_sum_bounded_linear[OF _ assms]) 
+    (auto simp add: bounded_clinear.bounded_linear kf_apply_bounded_clinear)
 
 lemma finite_kf_apply_abs_summable_on:
-assumes "f abs_summable_on A"
-shows "(kf_apply \<FF> o f) abs_summable_on A"
-by (intro abs_summable_on_bounded_linear) 
-   (auto simp add: assms bounded_clinear.bounded_linear kf_apply_bounded_clinear)
+  assumes "f abs_summable_on A"
+  shows "(kf_apply \<FF> o f) abs_summable_on A"
+  by (intro abs_summable_on_bounded_linear) 
+    (auto simp add: assms bounded_clinear.bounded_linear kf_apply_bounded_clinear)
 
 unbundle no cblinfun_syntax
 unbundle no lattice_syntax

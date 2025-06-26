@@ -8,30 +8,30 @@ section \<open>Auxiliary lemma: Estimation\<close>
 text \<open>For the proof of the mixed state O2H, we need an auxiliary lemma on the square roots of sums.\<close>
 
 lemma abc_ineq:
-assumes "a\<ge>0" "b\<ge>0" "c\<ge>0" "\<bar>sqrt a - sqrt b\<bar> \<le> sqrt c"
-shows "a + b \<le> c + 2 * sqrt (a * b)"
+  assumes "a\<ge>0" "b\<ge>0" "c\<ge>0" "\<bar>sqrt a - sqrt b\<bar> \<le> sqrt c"
+  shows "a + b \<le> c + 2 * sqrt (a * b)"
 proof -
   have "\<bar>sqrt a - sqrt b\<bar>^2 \<le> sqrt c ^2" using assms by (simp add: sqrt_ge_absD)
   then show ?thesis by (auto simp add: algebra_simps power2_diff assms real_sqrt_mult)
 qed
 
 lemma two_ab_ineq:
-assumes "a\<ge>0" "b\<ge>0"
-shows "2 * sqrt (a * b) \<le> a + b"
+  assumes "a\<ge>0" "b\<ge>0"
+  shows "2 * sqrt (a * b) \<le> a + b"
 proof -
   have "0 \<le> (sqrt a - sqrt b)^2" by auto
   then show ?thesis by (auto simp add: algebra_simps power2_diff assms real_sqrt_mult)
 qed
 
 lemma sqrt_estimate_real:
-assumes fin_M: "finite M" 
+  assumes fin_M: "finite M" 
     and pos_t: "\<forall>x\<in>M. t x \<ge> (0::real)" 
     and pos_u: "\<forall>x\<in>M. u x \<ge> (0::real)" 
     and pos_v: "\<forall>x\<in>M. v x \<ge> (0::real)" 
     and pos_a: "\<forall>x\<in>M. a x \<ge> (0::real)"
     and ineq:  "\<forall>x\<in>M. \<bar> sqrt (t x) - sqrt (u x)\<bar> \<le> sqrt (v x)"
-shows "\<bar>sqrt (\<Sum>x\<in>M. a x * t x) - sqrt (\<Sum>x\<in>M. a x * u x)\<bar> \<le> sqrt (\<Sum>x\<in>M. a x * v x)"
-using assms proof (induction M)
+  shows "\<bar>sqrt (\<Sum>x\<in>M. a x * t x) - sqrt (\<Sum>x\<in>M. a x * u x)\<bar> \<le> sqrt (\<Sum>x\<in>M. a x * v x)"
+  using assms proof (induction M)
   case empty
   then show ?case by auto
 next
@@ -72,7 +72,7 @@ next
   proof -
     have "\<bar>sqrt (tN + a y * t y) - sqrt (uN + a y * u y)\<bar>^2 = 
       tN + a y * t y + uN + a y * u y - 2 * sqrt((tN + a y * t y) * (uN + a y * u y))" 
-    by (auto simp add: algebra_simps power2_diff insert real_sqrt_mult[symmetric])
+      by (auto simp add: algebra_simps power2_diff insert real_sqrt_mult[symmetric])
     also have "\<dots> \<le> vN + a y * v y + 2 * sqrt(tN * uN) + 2* a y * sqrt (t y * u y) - 
       2 * sqrt ((tN + a y * t y) * (uN + a y * u y))"
       using 2 3 by auto
