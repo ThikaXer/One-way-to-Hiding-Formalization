@@ -1,7 +1,7 @@
 theory Definition_O2H
 
 imports Registers.Pure_States
-  Additional_Lemmas
+  O2H_Additional_Lemmas
 
 begin
 

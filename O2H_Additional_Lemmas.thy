@@ -1,4 +1,4 @@
-theory Additional_Lemmas
+theory O2H_Additional_Lemmas
   imports Registers.Pure_States
 begin
 

@@ -1,7 +1,7 @@
 theory More_Kraus_Maps
 
 imports Kraus_Maps.Kraus_Maps
-  Additional_Lemmas
+  O2H_Additional_Lemmas
 begin
 
 unbundle cblinfun_syntax
